@@ -1,0 +1,53 @@
+name: GH Pages Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@master
+        with:
+          persist-credentials: false
+          submodules: true
+
+      # Setup Node Env
+      - name: Prepare Node env
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+       # Use GitHub Actions' cache to shorten build times and decrease load on servers
+      - uses: actions/cache@main
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile') }}
+          restore-keys: |
+            ${{ runner.os }}-gems-
+
+      # Setup and Run Hexo to build the Static Site
+      - name: Hexo
+        run: |
+          npm i -g hexo-cli
+          npm i -g hexo-renderer-pug@3.0.0
+          npm i -g hexo-renderer-stylus@2.0.1
+          npm i -g hexo-renderer-swig@1.1.0
+          npm i -g hexo-theme-next@8.11.1
+          npm i
+          hexo clean && hexo g
+
+      # Deploy the Static Site to Public Repo (GitHub Pages)
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@main
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          repository-name: iranb/iranb.github.io
+          branch: master # The branch the action should deploy to.
+          folder: public # The folder the action should deploy.
+          single-commit: true
+          commit-message: "Deploy by source"
