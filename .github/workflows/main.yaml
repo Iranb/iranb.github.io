@@ -5,6 +5,14 @@ on:
     branches:
       - master
 
+env:
+  GIT_USER: iranb
+  GIT_EMAIL: 1751107579@qq.com
+  THEME_REPO: iranb/hexo-theme-next
+  THEME_BRANCH: master
+  DEPLOY_REPO: iranb/iranb.github.io
+  DEPLOY_BRANCH: master
+
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
@@ -18,9 +26,23 @@ jobs:
 
       # Setup Node Env
       - name: Prepare Node env
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@main
         with:
           node-version: 16
+
+      - name: Checkout theme repo
+        uses: actions/checkout@main
+        with:
+          repository: ${{ env.THEME_REPO }}
+          ref: ${{ env.THEME_BRANCH }}
+          path: themes/next
+
+      - name: Checkout deploy repo
+        uses: actions/checkout@main
+        with:
+          repository: ${{ env.DEPLOY_REPO }}
+          ref: ${{ env.DEPLOY_BRANCH }}
+          path: .deploy_git
 
        # Use GitHub Actions' cache to shorten build times and decrease load on servers
       - uses: actions/cache@main
@@ -33,6 +55,15 @@ jobs:
       # Setup and Run Hexo to build the Static Site
       - name: Hexo
         run: |
+          mkdir -p ~/.ssh/
+          echo "$HEXO_DEPLOY_PRI" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git config --global user.name $GIT_USER
+          git config --global user.email $GIT_EMAIL
+
+      - name: npm run
+        run: |
           npm i -g hexo-cli
           npm i -g hexo-renderer-pug@3.0.0
           npm i -g hexo-renderer-stylus@2.0.1
@@ -44,10 +75,5 @@ jobs:
       # Deploy the Static Site to Public Repo (GitHub Pages)
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@main
-        with:
-          ssh-key: ${{ secrets.DEPLOY_KEY }}
-          repository-name: iranb/iranb.github.io
-          branch: master # The branch the action should deploy to.
-          folder: public # The folder the action should deploy.
-          single-commit: true
-          commit-message: "Deploy by source"
+        run: |
+          npm run deploy
