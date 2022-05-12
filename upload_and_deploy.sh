@@ -8,3 +8,5 @@ git push origin main
 hexo clean
 hexo g
 hexo d
+
+echo "Success !!!"
