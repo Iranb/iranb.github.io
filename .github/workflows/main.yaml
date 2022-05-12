@@ -74,6 +74,5 @@ jobs:
 
       # Deploy the Static Site to Public Repo (GitHub Pages)
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@main
         run: |
           npm run deploy
