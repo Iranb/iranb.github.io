@@ -118,3 +118,4 @@ search:
 toc:
   enable: true
   wrap: true
+  max_depth: 3
