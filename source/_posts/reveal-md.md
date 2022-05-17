@@ -3,6 +3,7 @@ uuid: 137500a0-d5b3-11ec-8fdb-3db4a824d9de
 title: reveal-md
 date: 2022-05-17 15:29:24
 tags: ppt
+toc: true
 ---
 
 *Reveal-md*经常用于组会汇报和一些非正式场景的PPT实现中，生成的PPT或是展示用结果由markdown组成，并且具有默认的布局样式和一些功能丰富的插件，大大简化了生成汇报用PPT的工作量。

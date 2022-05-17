@@ -114,6 +114,7 @@ search:
   format: html
 
 
-# config for Next theme
-scheme: Gemini
-
+# index for each article
+toc:
+  enable: true
+  wrap: true

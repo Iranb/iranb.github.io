@@ -1,1 +1,3 @@
 scheme: Gemini
+minify: true
+darkmode: true
