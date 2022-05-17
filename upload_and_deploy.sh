@@ -6,7 +6,5 @@ git push origin main
 
 # deploy hexo
 hexo clean
-hexo g
-hexo d
-
+hexo g -d
 echo "Success !!!"

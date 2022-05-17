@@ -3,11 +3,11 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: Road to Stain‘s Gate
 subtitle: ''
 description: ''
 keywords:
-author: John Doe
+author: YiQing Hao
 language: en
 timezone: ''
 
@@ -40,7 +40,7 @@ external_link:
   exclude: ''
 filename_case: 0
 render_drafts: false
-post_asset_folder: false
+post_asset_folder: true
 relative_link: false
 future: true
 highlight:
@@ -107,5 +107,13 @@ deploy:
   branch: master
 
 
+search:
+  path: search.xml
+  field: post
+  content: true
+  format: html
+
+
 # config for Next theme
 scheme: Gemini
+
