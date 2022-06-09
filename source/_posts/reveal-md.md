@@ -24,6 +24,14 @@ html * {
 }
 {% endcodeblock %}
 
+reveal 中预定义了几种字体大小，可以根据实际需求进行修改
+
+{% codeblock ppt.md lang:html line_number:false %}
+font-size:medium|xx-small|x-small|small|large|x-large|xx-large|smaller|larger|length|initial|inherit;
+
+<p style="font-size:xx-small">
+{% endcodeblock %}
+
 2. 图像或内容居中设置
 这里有两种方式，一种是全局的图像或者文字进行样式设置进行居中，另一种是创建独立的div块，对块中的内容进行居中，这里使用css优先级可以对其中的元素进行单独更新，首先在全局文件中默认左对齐，之后根据实际需求在markdown文件中再对需要的部分进行修改即可。在**Reveal-md**中，单独的文字或段落会被渲染成<p></p>标签的形式，因此只需要对其样式进行修改即可。
 {% codeblock style/style.css lang:css line_number:false %}
