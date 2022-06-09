@@ -28,8 +28,6 @@ reveal 中预定义了几种字体大小，可以根据实际需求进行修改
 
 {% codeblock ppt.md lang:html line_number:false %}
 font-size:medium|xx-small|x-small|small|large|x-large|xx-large|smaller|larger|length|initial|inherit;
-
-<p style="font-size:xx-small">
 {% endcodeblock %}
 
 2. 图像或内容居中设置
