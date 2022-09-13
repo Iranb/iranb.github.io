@@ -2,7 +2,7 @@
 
 git add *
 git commit -m "update files"
-git push origin main
+git push -f origin main
 
 # deploy hexo
 hexo clean
