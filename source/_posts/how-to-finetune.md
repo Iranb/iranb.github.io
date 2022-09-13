@@ -31,6 +31,13 @@ mathjax: true
 ![Flower](./how-to-finetune/Flower.png)
 ![car](./how-to-finetune/car.png)
 ![Dogs](./how-to-finetune/dogs.png)
+4. 假设将输入图像大小放大到512x512会发生什么：放缩输入图像的大小等价于放缩图像中的物体，CNN可能找不到直径50的圆和边长30的三角形。
+![result_512](./how-to-finetune/result_512.png)
+如果图像尺寸缩小到128，模型可能找不到其中的圆
+![result_128](./how-to-finetune/result_128.png)
+5. 结论
+CNN能从图像中搜索固定的模式（patterns），这些固定的模式可能和图像的尺寸相关，因此需要通过实验寻找不同模式对应的inputsize， 或者融合多尺度特征。
+
 ## 0xFF: References
 
 \[1]: [Class-balanced-loss-pytorch](https://github.com/vandit15/Class-balanced-loss-pytorch)  
