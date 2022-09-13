@@ -32,9 +32,9 @@ mathjax: true
 ![car](car.png)
 ![Dogs](dogs.png)
 4. 假设将输入图像大小放大到512x512会发生什么：放缩输入图像的大小等价于放缩图像中的物体，CNN可能找不到直径50的圆和边长30的三角形。
-![result_512](result_512.png)
+![result_512](result_512.jpg)
 如果图像尺寸缩小到128，模型可能找不到其中的圆
-![result_128](result_128.png)
+![result_128](result_128.jpg)
 5. 结论
 CNN能从图像中搜索固定的模式（patterns），这些固定的模式可能和图像的尺寸相关，因此需要通过实验寻找不同模式对应的inputsize， 或者融合多尺度特征。
 
