@@ -35,6 +35,11 @@
 ]]></content>
   </entry>
   <entry>
+    <title>linux</title>
+    <url>/2022/05/12/linux/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>mmdetection</title>
     <url>/2022/05/12/mmdetection/</url>
     <content><![CDATA[<p>总结一些mmdetection 中常用代码及学习技巧</p>
@@ -107,10 +112,5 @@
       <tags>
         <tag>ppt</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>linux</title>
-    <url>/2022/05/12/linux/</url>
-    <content><![CDATA[]]></content>
   </entry>
 </search>
