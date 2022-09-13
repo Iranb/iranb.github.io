@@ -3,6 +3,7 @@ uuid: 88501be0-3313-11ed-89cc-1381c123a077
 title: kaggle top player notes
 date: 2022-09-13 11:24:10
 tags:
+mathjax: true
 ---
 记录一些kaggle top player 的笔记
 ## [Dieter](https://www.kaggle.com/christofhenkel): Deep Learning Data Scientist at Nvidia
