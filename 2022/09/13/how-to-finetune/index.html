@@ -29,9 +29,10 @@
 <meta property="og:description" content="总结一些深度模型常用的调试优化技巧。 ## 0x01 探索性数据分析 EDA(Exploratory Data Analysis) 0x02 正则化(Exploratory Data Analysis)  常用方法  Z score Normalization（mean std Standardization） \[ \frac{x-\overline{x}}{\sigma} \] Min-Max">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://iranb.github.io/2022/09/13/how-to-finetune/how-to-finetune/Flower.png">
+<meta property="og:image" content="https://iranb.github.io/2022/09/13/how-to-finetune/how-to-finetune/car.png">
 <meta property="og:image" content="https://iranb.github.io/2022/09/13/how-to-finetune/how-to-finetune/result_512.png">
 <meta property="article:published_time" content="2022-09-13T02:14:20.000Z">
-<meta property="article:modified_time" content="2022-09-13T06:55:11.466Z">
+<meta property="article:modified_time" content="2022-09-13T06:59:05.475Z">
 <meta property="article:author" content="YiQing Hao">
 <meta property="article:tag" content="pytorch">
 <meta name="twitter:card" content="summary">
@@ -204,7 +205,7 @@ Data Analysis)</span></a></li><li class="nav-item nav-level-2"><a class="nav-lin
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2022-09-13 10:14:20 / Modified: 14:55:11" itemprop="dateCreated datePublished" datetime="2022-09-13T10:14:20+08:00">2022-09-13</time>
+      <time title="Created: 2022-09-13 10:14:20 / Modified: 14:59:05" itemprop="dateCreated datePublished" datetime="2022-09-13T10:14:20+08:00">2022-09-13</time>
     </span>
 
   
@@ -275,8 +276,8 @@ alt="如图" />，从贝叶斯角度考虑，正则项等价于引入参数的�
 <li>以224x224大小的输入数据为例，假设输入图像经过网络输出的特征图大小为原始图像的<span
 class="math inline">\(\frac{1}{32}\)</span>,如果将输入图像尺寸增大到512x512,则对应的输出特征图大小从7x7变为16x16，特征图的输出大小仅与网络本身结构和输入的图像大小有关。</li>
 <li>在模型中，与预训练尺寸有关的是网络从确定大小物体中学习到的固定模式，例如从输入图像中寻找直径为50个像素大小的圆，或是边长为30个像素的三角形。以下三个图为例
-<img src="./how-to-finetune/Flower.png" alt="Flower" /> <img
-src="./how-to-finetune/car.png" alt="car" /> <img
+ <img src="./how-to-finetune/Flower.png" alt="Flower" />
+<img src="./how-to-finetune/car.png" alt="car" /> <img
 src="./how-to-finetune/dogs.png" alt="Dogs" /></li>
 <li>假设将输入图像大小放大到512x512会发生什么：放缩输入图像的大小等价于放缩图像中的物体，CNN可能找不到直径50的圆和边长30的三角形。
 <img src="./how-to-finetune/result_512.png" alt="result_512" />
