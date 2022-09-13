@@ -25,7 +25,7 @@
 </ul>
 </li>
 <li>使用imagenet dataset的 mean 和 std 正则化输入图像</li>
-<li>使用了GeM pooling<br>GeM pooling 中包含一个网络参数p，随着学习过程使得网络自适应学习选择偏重平均池化或是最大池化，p&#x3D;1时gem为平均池化, $p \rightarrow +\infty$ 时为最大池化，P越大越关注局部越小越关注全局<ul>
+<li>使用了GeM pooling<br>GeM pooling 中包含一个网络参数p，随着学习过程使得网络自适应学习选择偏重平均池化或是最大池化，p&#x3D;1时gem为平均池化, $p \rightarrow + \infty$ 时为最大池化，P越大越关注局部越小越关注全局<ul>
 <li>最大池化更多的保留的纹理特征，局部特征。</li>
 <li>平均池化更多保留的背景信息，全局特征。</li>
 </ul>
@@ -33,11 +33,6 @@
 <li>学习率： warmup + cosine annealing scheduler</li>
 </ol>
 ]]></content>
-  </entry>
-  <entry>
-    <title>linux</title>
-    <url>/2022/05/12/linux/</url>
-    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>mmdetection</title>
@@ -89,6 +84,11 @@
       <tags>
         <tag>pytorch</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>linux</title>
+    <url>/2022/05/12/linux/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>reveal-md</title>
