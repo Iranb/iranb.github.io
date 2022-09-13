@@ -68,3 +68,116 @@ model = dict(
         checkpoint_path='',
         out_indices=(1, 2, 3, 4)))
 {% endcodeblock %}
+
+4. 自定义**Pipeline**
+mmdetection中Pipeline决定了数据加载到送入模型前的数据处理过程，同时，Pipeline本身具有一定的灵活性，这里推荐结合 [albumentations](https://github.com/albumentations-team/albumentations) 进行数据预处理，包含对bbox 的处理过程，保证增强后的图片和标签的一致性。各种增强方法图像变换前后的对比可以[参考这里](https://albumentations-demo.herokuapp.com/)
+{% codeblock mmdetection/custom_models/albumentations.py lang:python line_number:false %}
+import random
+from mmcls.datasets import PIPELINES
+import albumentations as A
+
+@PIPELINES.register_module()
+class RandomAlbumentationsV2(object):
+    def __init__(self, p=0.6) -> None:
+        self.p = p
+        self.transform = A.Compose([
+            A.RandomGridShuffle(always_apply=False, p=self.p, grid=(2, 2)),
+            A.CoarseDropout(
+                always_apply=False, p=1,
+                max_holes=16,
+                max_height=8,
+                max_width=8,
+            ),
+            A.Downscale(
+                always_apply=False, p=self.p,
+                scale_min=0.25, scale_max=0.25, interpolation=0
+            ),
+
+            A.ISONoise(
+                always_apply=False, p=0.9,
+                intensity=(0.0, 0.5),
+                color_shift=(0.0, 0.5),
+            ),
+             A.JpegCompression(
+                always_apply=False, p=self.p,
+                quality_lower=80,
+                quality_upper=100
+            ),
+            A.MotionBlur(
+                always_apply=False, p=self.p, 
+                blur_limit=(3, 10),
+            ),
+            A.MultiplicativeNoise(
+                always_apply=False, p=1.0, multiplier=(0.1, 2.0),
+                per_channel=True,
+                elementwise=True
+            )
+
+        ])
+    def __call__(self, results):
+        img = results['img']
+        transformed = self.transform(image=img)
+        results['img'] = transformed["image"]
+        return results
+
+{% endcodeblock %}
+Pipeline 定义完成后，在config相应数据处理config片段中加入定义好的预处理方法即可
+{% codeblock mmdetection/config/custom_config.py lang:python line_number:false %}
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='Resize',size=224),
+    dict(type='RandomAlbumentationsV2'), # 这里为自定义pipeline的名称，可在dict内添加对应的参数
+    dict(type='RandomNoise'),
+    dict(type='RandomFlip'),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='ImageToTensor', keys=['img']),
+    dict(type='ToTensor', keys=['gt_label']),
+    dict(type='Collect', keys=['img', 'gt_label'])
+]
+{% endcodeblock %}
+
+5. 自动保存最好的ckpt文件
+mmdetection中在evaluation epoch中可按照相应的结果保存相应指标最好的权重文件，且可设置训练多少epoch时开始保存。其自带的权重保存机制支持限制保存文件的最大数量。对应代码如下：
+{% codeblock mmdetection/config/custom_config.py lang:python line_number:false %}
+checkpoint_config = dict(interval=50, max_keep_ckpts=2) # 每50 epoch 保存一次，保存目录中最多存在两个权重文件，evaluation生成文件不包含在限制内
+evaluation = dict(       # evaluation hook 的配置
+    interval=4,          # 验证期间的间隔，单位为 epoch 或者 iter， 取决于 runner 类型。
+    metric='accuracy',
+    save_best='auto',
+    start=50
+    )   # 验证期间使用的指标。
+{% endcodeblock %}
+
+6. 梯度累计
+训练真实使用的batchsize为 samples_per_gpu * cumulative_iters，此项设置会影响模型训练的流程，最好不使用。
+{% codeblock mmdetection/config/custom_config.py lang:python line_number:false %}
+optimizer_config = dict(
+    type="GradientCumulativeOptimizerHook", # 累积倍数
+    cumulative_iters=4,
+)
+data =dict(
+    samples_per_gpu=64, # 基础batchsize
+）
+{% endcodeblock %}
+
+7. 学习率调节和可视化
+mmdetection中有几种内置的学习速率调节策略，基本通用型为使用CosineAnnealing且随epoch不断变化的学习速率设置。如下代码，target_ratio决定了最大和最小两次的学习率倍数，这里设置学习率随着epoch不断变化。
+{% codeblock mmdetection/config/custom_config.py lang:python line_number:false %}
+lr_config = dict(
+    policy='cyclic',
+    target_ratio= (2e3, 1e-2), # 决定了最大学习率倍数，实际最大值为 target_ratio[0] * lr
+    cyclic_times= 5, # 训练开始到训练结束共调整五次
+    step_ratio_up= 0.4, # real lr = warmup_ratio * initial lr
+)
+
+optimizer = dict(
+    type='AdamW',
+    lr=5e-4 * 128 * 4 / 512 * 1e-4, # 决定了 baselr
+    weight_decay=0.0001,
+    eps=1e-8,
+    betas=(0.9, 0.999),)
+{% endcodeblock %}
+mmdetection中自带学习率可视化工具，可以根据config文件对学习率可视化，方便调整。
+{% codeblock mmdetection/config/custom_config.py lang:bash line_number:false %}
+# python tools/visualizations/vis_lr.py [config_path] --save-path [output_path]
+{% endcodeblock %}
