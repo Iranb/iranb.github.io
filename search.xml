@@ -1,30 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>kaggle top player notes</title>
-    <url>/2022/09/13/kaggle-top-player-notes/</url>
-    <content><![CDATA[<p>记录一些kaggle top player 的笔记</p>
-<h2 id="Dieter-Deep-Learning-Data-Scientist-at-Nvidia"><a href="#Dieter-Deep-Learning-Data-Scientist-at-Nvidia" class="headerlink" title="Dieter: Deep Learning Data Scientist at Nvidia"></a><a href="https://www.kaggle.com/christofhenkel">Dieter</a>: Deep Learning Data Scientist at Nvidia</h2><ol>
-<li>Ensemble, bag of models<br>Dieter 使用了7个模型，集合albumentations的图像放缩<ul>
-<li>2x seresnext101 - SmallMaxSize(512) -&gt; RandomCrop(448,448)</li>
-<li>1x seresnext101 - Resize(686,686) -&gt; RandomCrop(568,568)</li>
-<li>1x b3 - LongestMaxSize(512) -&gt; PadIfNeeded -&gt; RandomCrop(448,448)</li>
-<li>1x b3 - LongestMaxSize(664) -&gt; PadIfNeeded -&gt; RandomCrop(600,600)</li>
-<li>1x resnet152 - Resize(544,672) -&gt; RandomCrop(512,512)</li>
-<li>1x res2net101 - Resize(544,672) -&gt; RandomCrop(512,512)</li>
-</ul>
-</li>
-<li>使用imagenet dataset的 mean 和 std 正则化输入图像</li>
-<li>使用了GeM pooling<br>GeM pooling 中包含一个网络参数p，随着学习过程使得网络自适应学习选择偏重平均池化或是最大池化，p&#x3D;1时gem为平均池化, $p \rightarrow + \infty$ 时为最大池化，P越大越关注局部越小越关注全局<ul>
-<li>最大池化更多的保留的纹理特征，局部特征。</li>
-<li>平均池化更多保留的背景信息，全局特征。</li>
-</ul>
-</li>
-<li>学习率： warmup + cosine annealing scheduler</li>
-</ol>
-]]></content>
-  </entry>
-  <entry>
     <title>how_to_finetune</title>
     <url>/2022/09/13/how-to-finetune/</url>
     <content><![CDATA[<p>总结一些深度模型常用的调试优化技巧。</p>
@@ -51,6 +27,35 @@
       <tags>
         <tag>pytorch</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>linux</title>
+    <url>/2022/05/12/linux/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>kaggle top player notes</title>
+    <url>/2022/09/13/kaggle-top-player-notes/</url>
+    <content><![CDATA[<p>记录一些kaggle top player 的笔记</p>
+<h2 id="Dieter-Deep-Learning-Data-Scientist-at-Nvidia"><a href="#Dieter-Deep-Learning-Data-Scientist-at-Nvidia" class="headerlink" title="Dieter: Deep Learning Data Scientist at Nvidia"></a><a href="https://www.kaggle.com/christofhenkel">Dieter</a>: Deep Learning Data Scientist at Nvidia</h2><ol>
+<li>Ensemble, bag of models<br>Dieter 使用了7个模型，集合albumentations的图像放缩<ul>
+<li>2x seresnext101 - SmallMaxSize(512) -&gt; RandomCrop(448,448)</li>
+<li>1x seresnext101 - Resize(686,686) -&gt; RandomCrop(568,568)</li>
+<li>1x b3 - LongestMaxSize(512) -&gt; PadIfNeeded -&gt; RandomCrop(448,448)</li>
+<li>1x b3 - LongestMaxSize(664) -&gt; PadIfNeeded -&gt; RandomCrop(600,600)</li>
+<li>1x resnet152 - Resize(544,672) -&gt; RandomCrop(512,512)</li>
+<li>1x res2net101 - Resize(544,672) -&gt; RandomCrop(512,512)</li>
+</ul>
+</li>
+<li>使用imagenet dataset的 mean 和 std 正则化输入图像</li>
+<li>使用了GeM pooling<br>GeM pooling 中包含一个网络参数p，随着学习过程使得网络自适应学习选择偏重平均池化或是最大池化，p&#x3D;1时gem为平均池化, $p \rightarrow + \infty$ 时为最大池化，P越大越关注局部越小越关注全局<ul>
+<li>最大池化更多的保留的纹理特征，局部特征。</li>
+<li>平均池化更多保留的背景信息，全局特征。</li>
+</ul>
+</li>
+<li>学习率： warmup + cosine annealing scheduler</li>
+</ol>
+]]></content>
   </entry>
   <entry>
     <title>mmdetection</title>
@@ -125,10 +130,5 @@
       <tags>
         <tag>ppt</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>linux</title>
-    <url>/2022/05/12/linux/</url>
-    <content><![CDATA[]]></content>
   </entry>
 </search>
