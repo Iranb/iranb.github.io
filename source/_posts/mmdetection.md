@@ -135,6 +135,10 @@ train_pipeline = [
     dict(type='Collect', keys=['img', 'gt_label'])
 ]
 {% endcodeblock %}
+检查Pipeline是否正确，这里可以使用mmdetection自带的工具对pipeline处理后的图像进行可视化处理。
+{% codeblock mmdetection/show_pipeline.sh lang:bash line_number:false %}
+python tools/visualizations/vis_pipeline.py [config_path] --output-dir [out_dir_path] --number 20 --mode concat
+{% endcodeblock %}
 
 5. 自动保存最好的ckpt文件
 mmdetection中在evaluation epoch中可按照相应的结果保存相应指标最好的权重文件，且可设置训练多少epoch时开始保存。其自带的权重保存机制支持限制保存文件的最大数量。对应代码如下：
@@ -178,6 +182,25 @@ optimizer = dict(
     betas=(0.9, 0.999),)
 {% endcodeblock %}
 mmdetection中自带学习率可视化工具，可以根据config文件对学习率可视化，方便调整。
-{% codeblock mmdetection/config/custom_config.py lang:bash line_number:false %}
-# python tools/visualizations/vis_lr.py [config_path] --save-path [output_path]
+{% codeblock mmdetection/show_lr.sh lang:bash line_number:false %}
+python tools/visualizations/vis_lr.py [config_path] --save-path [output_path]
+{% endcodeblock %}
+
+8. Mixup & CutPaste
+mmcls中支持两个比较特殊的数据增强策略，Mixup 和 CutPaste,通常结合 LabelSmoothLoss。
+{% codeblock mmdetection/config/resnet.py lang:python line_number:false %}
+model = dict(
+    backbone = ...,
+    neck = ...,
+    head = ...,
+    train_cfg=dict(augments=[
+        dict(type='BatchMixup', alpha=0.8, prob=0.5, num_classes=num_classes),
+        dict(type='BatchCutMix', alpha=1.0, prob=0.5, num_classes=num_classes),
+    ]))
+)
+{% endcodeblock %}
+9. 多卡 batch norm同步设置
+有两种可用的batch norm sync 设置，MMSyncBN和SyncBN,MMSyncBN为实验功能，缺少相关文档介绍。
+{% codeblock mmdetection/config/base.py lang:python line_number:false %}
+norm_cfg=dict(type='MMSyncBN', requires_grad=True) # or type='SyncBN'
 {% endcodeblock %}
