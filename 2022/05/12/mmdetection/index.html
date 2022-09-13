@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"iranb.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.13.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="总结一些mmdetection 中常用代码及学习技巧  外部引用保持代码结构整洁  在mmdetection中的config可以直接引用自定义文件夹中的代码，因此可以做到代码重用，保持目录的整洁。当前github上复用mmdetection代码开发实现的相关代码仓库中大多引用了不必要的代码，因此考虑从结构上简化。其中 allow_failed_imports&#x3D;False 会在impoor">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mmdetection">
+<meta property="og:url" content="https://iranb.github.io/2022/05/12/mmdetection/index.html">
+<meta property="og:site_name" content="Road to Stain‘s Gate">
+<meta property="og:description" content="总结一些mmdetection 中常用代码及学习技巧  外部引用保持代码结构整洁  在mmdetection中的config可以直接引用自定义文件夹中的代码，因此可以做到代码重用，保持目录的整洁。当前github上复用mmdetection代码开发实现的相关代码仓库中大多引用了不必要的代码，因此考虑从结构上简化。其中 allow_failed_imports&#x3D;False 会在impoor">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-05-12T08:31:53.000Z">
+<meta property="article:modified_time" content="2022-09-13T03:15:36.096Z">
+<meta property="article:author" content="YiQing Hao">
+<meta property="article:tag" content="pytorch">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://iranb.github.io/2022/05/12/mmdetection/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://iranb.github.io/2022/05/12/mmdetection/","path":"2022/05/12/mmdetection/","title":"mmdetection"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>mmdetection | Road to Stain‘s Gate</title>
+  
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Road to Stain‘s Gate</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">YiQing Hao</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://iranb.github.io/2022/05/12/mmdetection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="YiQing Hao">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Road to Stain‘s Gate">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="mmdetection | Road to Stain‘s Gate">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          mmdetection
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-05-12 16:31:53" itemprop="dateCreated datePublished" datetime="2022-05-12T16:31:53+08:00">2022-05-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-09-13 11:15:36" itemprop="dateModified" datetime="2022-09-13T11:15:36+08:00">2022-09-13</time>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="Symbols count in article">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">Symbols count in article: </span>
+      <span>5.5k</span>
+    </span>
+    <span class="post-meta-item" title="Reading time">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">Reading time &asymp;</span>
+      <span>5 mins.</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>总结一些mmdetection 中常用代码及学习技巧</p>
+<ol>
+<li>外部引用保持代码结构整洁</li>
+</ol>
+<p>在mmdetection中的config可以直接引用自定义文件夹中的代码，因此可以做到代码重用，保持目录的整洁。当前github上复用mmdetection代码开发实现的相关代码仓库中大多引用了不必要的代码，因此考虑从结构上简化。其中 <em>allow_failed_imports&#x3D;False</em> 会在impoort的文件不存在的时候throw error。</p>
+<figure class="highlight python"><figcaption><span>mmdetection/config/solo.py</span></figcaption><table><tr><td class="code"><pre><span class="line">custom_imports = <span class="built_in">dict</span>(</span><br><span class="line">    imports=[</span><br><span class="line">        <span class="string">&quot;custommd.models.detectors.single_stage_ins&quot;</span>,</span><br><span class="line">        <span class="string">&quot;custommd.models.detectors.solov2&quot;</span>,</span><br><span class="line">        <span class="string">&quot;custommd.models.solov2.mask_feat_head&quot;</span>,</span><br><span class="line">        <span class="string">&quot;custommd.models.solov2.solov2_head&quot;</span>,</span><br><span class="line">    ],</span><br><span class="line">    allow_failed_imports=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>使用Wandb监控实验</li>
+</ol>
+<p>mmdetection框架中的wandb日志实现策略在<a target="_blank" rel="noopener" href="https://github.com/open-mmlab/mmcv/blob/83df7c4b00197b40c3debdb7f388a256640e13b4/mmcv/runner/hooks/logger/wandb.py">github</a>中能够找到,关于wandb的初始化参数可以参考<a target="_blank" rel="noopener" href="https://docs.wandb.ai/ref/python/init">这里</a>, 配置文件中可以在<em>wandb_init_kwargs</em>中定义wandb的初始化参数。</p>
+<figure class="highlight python"><figcaption><span>mmdetection/config/model_config.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> wandb</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">log_config = <span class="built_in">dict</span>(</span><br><span class="line">            interval=<span class="number">10</span>,</span><br><span class="line">            hooks=[</span><br><span class="line">                <span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;WandbLogger&#x27;</span>,</span><br><span class="line">                     wandb_init_kwargs=&#123;</span><br><span class="line">                         <span class="string">&#x27;entity&#x27;</span>: WANDB_ENTITY,</span><br><span class="line">                         <span class="string">&#x27;project&#x27;</span>: WANDB_PROJECT_NAME</span><br><span class="line">                     &#125;,</span><br><span class="line">                     logging_interval=<span class="number">10</span>,</span><br><span class="line">                     log_checkpoint=<span class="literal">True</span>,</span><br><span class="line">                     log_checkpoint_metadata=<span class="literal">True</span>,</span><br><span class="line">                     num_eval_images=<span class="number">100</span>)</span><br><span class="line">            ])</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>使用timm中预训练的backbone</li>
+</ol>
+<p>mmdetection 中可以使用部分timm模型作为特征提取器，但是使用有所限制。使用timm库中的特征提取器需要指定使用的backbone类型。TIMMBackbone类型的具体定义在<em>mmcls.models</em>中。有两种方式可以实现，第一种是安装mmcls包后，使用其对TIMMBackbone的定义方式，显示的在config中的backbone部分制定，另一部分则是将<a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/open-mmlab/mmclassification/master/mmcls/models/backbones/base_backbone.py">basebackbone.py</a>文件和<a target="_blank" rel="noopener" href="https://github.com/open-mmlab/mmclassification/blob/master/mmcls/models/backbones/timm_backbone.py">timm_backbone.py</a>稍作修改，主要是对其中的get_root_logger()函数修改为修改为<code>from mmdet.utils import get_root_logger</code>,通过这两种引用方式可以实现在mmdetection中使用timm库中的预训练模型。默认情况下不使用预训练的权重，需要显式指定。支持更改权重所在的位置，可以使用在image21-k上预训练的模型权重。具体代码如下：</p>
+<figure class="highlight python"><figcaption><span>mmdetection/config/model_config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">custom_imports = <span class="built_in">dict</span>(imports=[<span class="string">&#x27;mmcls.models&#x27;</span>], allow_failed_imports=<span class="literal">False</span>)</span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">custom_imports = dict(imports=[</span></span><br><span class="line"><span class="string">    &#x27;mmdet.model.backbone.timm_backbone&#x27;</span></span><br><span class="line"><span class="string">    ], allow_failed_imports=False)</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">model = <span class="built_in">dict</span>(</span><br><span class="line">    backbone=<span class="built_in">dict</span>(</span><br><span class="line">        _delete_=<span class="literal">True</span>,</span><br><span class="line">        <span class="built_in">type</span>=<span class="string">&#x27;mmcls.TIMMBackbone&#x27;</span>,</span><br><span class="line">        model_name=<span class="string">&#x27;tv_resnet50&#x27;</span>,  <span class="comment"># ResNet-50 with torchvision weights</span></span><br><span class="line">        features_only=<span class="literal">True</span>,</span><br><span class="line">        pretrained=<span class="literal">True</span>,</span><br><span class="line">        checkpoint_path=<span class="string">&#x27;&#x27;</span>,</span><br><span class="line">        out_indices=(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>)))</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><p>自定义<strong>Pipeline</strong><br>mmdetection中Pipeline决定了数据加载到送入模型前的数据处理过程，同时，Pipeline本身具有一定的灵活性，这里推荐结合 <a target="_blank" rel="noopener" href="https://github.com/albumentations-team/albumentations">albumentations</a> 进行数据预处理，包含对bbox 的处理过程，保证增强后的图片和标签的一致性。各种增强方法图像变换前后的对比可以<a target="_blank" rel="noopener" href="https://albumentations-demo.herokuapp.com/">参考这里</a></p>
+<figure class="highlight python"><figcaption><span>mmdetection/custom_models/albumentations.py</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">from</span> mmcls.datasets <span class="keyword">import</span> PIPELINES</span><br><span class="line"><span class="keyword">import</span> albumentations <span class="keyword">as</span> A</span><br><span class="line"></span><br><span class="line"><span class="meta">@PIPELINES.register_module()</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RandomAlbumentationsV2</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, p=<span class="number">0.6</span></span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">        self.p = p</span><br><span class="line">        self.transform = A.Compose([</span><br><span class="line">            A.RandomGridShuffle(always_apply=<span class="literal">False</span>, p=self.p, grid=(<span class="number">2</span>, <span class="number">2</span>)),</span><br><span class="line">            A.CoarseDropout(</span><br><span class="line">                always_apply=<span class="literal">False</span>, p=<span class="number">1</span>,</span><br><span class="line">                max_holes=<span class="number">16</span>,</span><br><span class="line">                max_height=<span class="number">8</span>,</span><br><span class="line">                max_width=<span class="number">8</span>,</span><br><span class="line">            ),</span><br><span class="line">            A.Downscale(</span><br><span class="line">                always_apply=<span class="literal">False</span>, p=self.p,</span><br><span class="line">                scale_min=<span class="number">0.25</span>, scale_max=<span class="number">0.25</span>, interpolation=<span class="number">0</span></span><br><span class="line">            ),</span><br><span class="line"></span><br><span class="line">            A.ISONoise(</span><br><span class="line">                always_apply=<span class="literal">False</span>, p=<span class="number">0.9</span>,</span><br><span class="line">                intensity=(<span class="number">0.0</span>, <span class="number">0.5</span>),</span><br><span class="line">                color_shift=(<span class="number">0.0</span>, <span class="number">0.5</span>),</span><br><span class="line">            ),</span><br><span class="line">             A.JpegCompression(</span><br><span class="line">                always_apply=<span class="literal">False</span>, p=self.p,</span><br><span class="line">                quality_lower=<span class="number">80</span>,</span><br><span class="line">                quality_upper=<span class="number">100</span></span><br><span class="line">            ),</span><br><span class="line">            A.MotionBlur(</span><br><span class="line">                always_apply=<span class="literal">False</span>, p=self.p, </span><br><span class="line">                blur_limit=(<span class="number">3</span>, <span class="number">10</span>),</span><br><span class="line">            ),</span><br><span class="line">            A.MultiplicativeNoise(</span><br><span class="line">                always_apply=<span class="literal">False</span>, p=<span class="number">1.0</span>, multiplier=(<span class="number">0.1</span>, <span class="number">2.0</span>),</span><br><span class="line">                per_channel=<span class="literal">True</span>,</span><br><span class="line">                elementwise=<span class="literal">True</span></span><br><span class="line">            )</span><br><span class="line"></span><br><span class="line">        ])</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__call__</span>(<span class="params">self, results</span>):</span><br><span class="line">        img = results[<span class="string">&#x27;img&#x27;</span>]</span><br><span class="line">        transformed = self.transform(image=img)</span><br><span class="line">        results[<span class="string">&#x27;img&#x27;</span>] = transformed[<span class="string">&quot;image&quot;</span>]</span><br><span class="line">        <span class="keyword">return</span> results</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>Pipeline 定义完成后，在config相应数据处理config片段中加入定义好的预处理方法即可</p>
+<figure class="highlight python"><figcaption><span>mmdetection/config/custom_config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">train_pipeline = [</span><br><span class="line">    <span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;LoadImageFromFile&#x27;</span>),</span><br><span class="line">    <span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;Resize&#x27;</span>,size=<span class="number">224</span>),</span><br><span class="line">    <span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;RandomAlbumentationsV2&#x27;</span>), <span class="comment"># 这里为自定义pipeline的名称，可在dict内添加对应的参数</span></span><br><span class="line">    <span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;RandomNoise&#x27;</span>),</span><br><span class="line">    <span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;RandomFlip&#x27;</span>),</span><br><span class="line">    <span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;Normalize&#x27;</span>, **img_norm_cfg),</span><br><span class="line">    <span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;ImageToTensor&#x27;</span>, keys=[<span class="string">&#x27;img&#x27;</span>]),</span><br><span class="line">    <span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;ToTensor&#x27;</span>, keys=[<span class="string">&#x27;gt_label&#x27;</span>]),</span><br><span class="line">    <span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;Collect&#x27;</span>, keys=[<span class="string">&#x27;img&#x27;</span>, <span class="string">&#x27;gt_label&#x27;</span>])</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>检查Pipeline是否正确，这里可以使用mmdetection自带的工具对pipeline处理后的图像进行可视化处理。</p>
+<figure class="highlight bash"><figcaption><span>mmdetection/show_pipeline.sh</span></figcaption><table><tr><td class="code"><pre><span class="line">python tools/visualizations/vis_pipeline.py [config_path] --output-dir [out_dir_path] --number 20 --mode concat</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>自动保存最好的ckpt文件<br>mmdetection中在evaluation epoch中可按照相应的结果保存相应指标最好的权重文件，且可设置训练多少epoch时开始保存。其自带的权重保存机制支持限制保存文件的最大数量。对应代码如下：</p>
+<figure class="highlight python"><figcaption><span>mmdetection/config/custom_config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">checkpoint_config = <span class="built_in">dict</span>(interval=<span class="number">50</span>, max_keep_ckpts=<span class="number">2</span>) <span class="comment"># 每50 epoch 保存一次，保存目录中最多存在两个权重文件，evaluation生成文件不包含在限制内</span></span><br><span class="line">evaluation = <span class="built_in">dict</span>(       <span class="comment"># evaluation hook 的配置</span></span><br><span class="line">    interval=<span class="number">4</span>,          <span class="comment"># 验证期间的间隔，单位为 epoch 或者 iter， 取决于 runner 类型。</span></span><br><span class="line">    metric=<span class="string">&#x27;accuracy&#x27;</span>,</span><br><span class="line">    save_best=<span class="string">&#x27;auto&#x27;</span>,</span><br><span class="line">    start=<span class="number">50</span></span><br><span class="line">    )   <span class="comment"># 验证期间使用的指标。</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>梯度累计<br>训练真实使用的batchsize为 samples_per_gpu * cumulative_iters，此项设置会影响模型训练的流程，最好不使用。</p>
+<figure class="highlight python"><figcaption><span>mmdetection/config/custom_config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">optimizer_config = <span class="built_in">dict</span>(</span><br><span class="line">    <span class="built_in">type</span>=<span class="string">&quot;GradientCumulativeOptimizerHook&quot;</span>, <span class="comment"># 累积倍数</span></span><br><span class="line">    cumulative_iters=<span class="number">4</span>,</span><br><span class="line">)</span><br><span class="line">data =<span class="built_in">dict</span>(</span><br><span class="line">    samples_per_gpu=<span class="number">64</span>, <span class="comment"># 基础batchsize</span></span><br><span class="line">）</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>学习率调节和可视化<br>mmdetection中有几种内置的学习速率调节策略，基本通用型为使用CosineAnnealing且随epoch不断变化的学习速率设置。如下代码，target_ratio决定了最大和最小两次的学习率倍数，这里设置学习率随着epoch不断变化。</p>
+<figure class="highlight python"><figcaption><span>mmdetection/config/custom_config.py</span></figcaption><table><tr><td class="code"><pre><span class="line">lr_config = <span class="built_in">dict</span>(</span><br><span class="line">    policy=<span class="string">&#x27;cyclic&#x27;</span>,</span><br><span class="line">    target_ratio= (<span class="number">2e3</span>, <span class="number">1e-2</span>), <span class="comment"># 决定了最大学习率倍数，实际最大值为 target_ratio[0] * lr</span></span><br><span class="line">    cyclic_times= <span class="number">5</span>, <span class="comment"># 训练开始到训练结束共调整五次</span></span><br><span class="line">    step_ratio_up= <span class="number">0.4</span>, <span class="comment"># real lr = warmup_ratio * initial lr</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">optimizer = <span class="built_in">dict</span>(</span><br><span class="line">    <span class="built_in">type</span>=<span class="string">&#x27;AdamW&#x27;</span>,</span><br><span class="line">    lr=<span class="number">5e-4</span> * <span class="number">128</span> * <span class="number">4</span> / <span class="number">512</span> * <span class="number">1e-4</span>, <span class="comment"># 决定了 baselr</span></span><br><span class="line">    weight_decay=<span class="number">0.0001</span>,</span><br><span class="line">    eps=<span class="number">1e-8</span>,</span><br><span class="line">    betas=(<span class="number">0.9</span>, <span class="number">0.999</span>),)</span><br></pre></td></tr></table></figure>
+<p>mmdetection中自带学习率可视化工具，可以根据config文件对学习率可视化，方便调整。</p>
+<figure class="highlight bash"><figcaption><span>mmdetection/show_lr.sh</span></figcaption><table><tr><td class="code"><pre><span class="line">python tools/visualizations/vis_lr.py [config_path] --save-path [output_path]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Mixup &amp; CutPaste<br>mmcls中支持两个比较特殊的数据增强策略，Mixup 和 CutPaste,通常结合 LabelSmoothLoss。</p>
+<figure class="highlight python"><figcaption><span>mmdetection/config/resnet.py</span></figcaption><table><tr><td class="code"><pre><span class="line">model = <span class="built_in">dict</span>(</span><br><span class="line">    backbone = ...,</span><br><span class="line">    neck = ...,</span><br><span class="line">    head = ...,</span><br><span class="line">    train_cfg=<span class="built_in">dict</span>(augments=[</span><br><span class="line">        <span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;BatchMixup&#x27;</span>, alpha=<span class="number">0.8</span>, prob=<span class="number">0.5</span>, num_classes=num_classes),</span><br><span class="line">        <span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;BatchCutMix&#x27;</span>, alpha=<span class="number">1.0</span>, prob=<span class="number">0.5</span>, num_classes=num_classes),</span><br><span class="line">    ]))</span><br><span class="line">)</span><br></pre></td></tr></table></figure></li>
+<li><p>多卡 batch norm同步设置<br>有两种可用的batch norm sync 设置，MMSyncBN和SyncBN,MMSyncBN为实验功能，缺少相关文档介绍。</p>
+<figure class="highlight python"><figcaption><span>mmdetection/config/base.py</span></figcaption><table><tr><td class="code"><pre><span class="line">norm_cfg=<span class="built_in">dict</span>(<span class="built_in">type</span>=<span class="string">&#x27;MMSyncBN&#x27;</span>, requires_grad=<span class="literal">True</span>) <span class="comment"># or type=&#x27;SyncBN&#x27;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/pytorch/" rel="tag"># pytorch</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/05/12/linux/" rel="next" title="linux">
+                  linux <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YiQing Hao</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="Symbols count total">8k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">7 mins.</span>
+  </span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
