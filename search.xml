@@ -1,6 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>linux</title>
+    <url>/2022/05/12/linux/</url>
+    <content><![CDATA[
+]]></content>
+  </entry>
+  <entry>
+    <title>how_to_finetune</title>
+    <url>/2022/09/13/how-to-finetune/</url>
+    <content><![CDATA[<p>总结一些深度模型常用的调试优化技巧。 ## 0x01 探索性数据分析
+EDA(Exploratory Data Analysis)</p>
+<h2 id="x02-正则化exploratory-data-analysis">0x02 正则化(Exploratory
+Data Analysis)</h2>
+<ol type="1">
+<li>常用方法
+<ul>
+<li>Z score Normalization（mean std Standardization） <span
+class="math display">\[
+\frac{x-\overline{x}}{\sigma}
+\]</span></li>
+<li>Min-Max Scaling</li>
+<li>Standard Deviation Method</li>
+<li>Range Method</li>
+</ul></li>
+<li>为什么需要使用正则化方法
+<ul>
+<li>For Cluster
+Analysis：通常情况需要度量不同输入间的距离，未正则化数据可能会存在特殊极值影响度量结果。</li>
+<li>For Principal Component Analysis：PCA gives more weightage to those
+variables that have higher variances than to those variables that have
+very low variances（方差会影响降维结果）</li>
+<li>正则化能改变输入数据的分布，在数据预处理时通常包含两个步骤：Scaling
+&amp; Normalize， Scaling负责将输入数据映射到0-1范围内，Scaling can help
+compare different variables on equal
+footing（在同样的步长上比较两个数据）;
+Normalization本质上是一种激进的策略，The point of normalization is to
+change your observations so that they can be described as a normal
+distribution.Normalization能够改变模型观察数据的角度，使输入数据可以被描述为一个正态分布。</li>
+<li>Scaling(归一化)消除特征间单位和尺度差异的影响，以对每维特征同等看待，需要对特征进行归一化。</li>
+<li>因尺度差异，其损失函数的等高线图可能是椭圆形，梯度方向垂直于等高线,变换后，其损失函数的等高线图更接近圆形，梯度下降的方向震荡更小，收敛更快</li>
+<li>随着训练程度加深，模型复杂度会增加，偏差减少，方差增大，而泛化误差呈现
+U
+型变化，对于一个“好的系统”通常要求误差小，正则化的作用即为适当的控制模型复杂度，从而使得泛化误差曲线取最小值<img
+src="normlize.png"
+alt="如图" />，从贝叶斯角度考虑，正则项等价于引入参数的模型先验概率，可以简单理解为对最大似然估计（MLE）引入先验概率，从而转化为最大后验估计（MAP），其中的先验概率即对于正则项
+## 0x03: 如何选择CNN输入图像的尺寸</li>
+</ul></li>
+</ol>
+<h2 id="xff-references">0xFF: References</h2>
+<p>[1]: <a
+href="https://github.com/vandit15/Class-balanced-loss-pytorch">Class-balanced-loss-pytorch</a>
+[2]: <a
+href="https://www.kaggle.com/discussions/questions-and-answers/59305">When
+and why to standardize or normalize a variable?</a> [3]: <a
+href="https://www.kaggle.com/code/rtatman/data-cleaning-challenge-scale-and-normalize-data/notebook">Data
+Cleaning Challenge: Scale and Normalize Data</a> [4]: <a
+href="https://www.kaggle.com/competitions/siim-isic-melanoma-classification/discussion/160147">CNN
+Input Size Explained</a></p>
+]]></content>
+      <tags>
+        <tag>pytorch</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>kaggle top player notes</title>
+    <url>/2022/09/13/kaggle-top-player-notes/</url>
+    <content><![CDATA[<p>记录一些kaggle top player 的笔记 ## <a
+href="https://www.kaggle.com/christofhenkel">Dieter</a>: Deep Learning
+Data Scientist at Nvidia 1. Ensemble, bag of models Dieter
+使用了7个模型，集合albumentations的图像放缩 - 2x seresnext101 -
+SmallMaxSize(512) -&gt; RandomCrop(448,448) - 1x seresnext101 -
+Resize(686,686) -&gt; RandomCrop(568,568) - 1x b3 - LongestMaxSize(512)
+-&gt; PadIfNeeded -&gt; RandomCrop(448,448) - 1x b3 -
+LongestMaxSize(664) -&gt; PadIfNeeded -&gt; RandomCrop(600,600) - 1x
+resnet152 - Resize(544,672) -&gt; RandomCrop(512,512) - 1x res2net101 -
+Resize(544,672) -&gt; RandomCrop(512,512) 2. 使用imagenet dataset的 mean
+和 std 正则化输入图像 3. 使用了GeM pooling GeM pooling
+中包含一个网络参数p，随着学习过程使得网络自适应学习选择偏重平均池化或是最大池化，p=1时gem为平均池化,
+<span class="math inline">\(p \rightarrow + \infty\)</span>
+时为最大池化，P越大越关注局部越小越关注全局 -
+最大池化更多的保留的纹理特征，局部特征。 -
+平均池化更多保留的背景信息，全局特征。 4. 学习率： warmup + cosine
+annealing scheduler</p>
+]]></content>
+  </entry>
+  <entry>
     <title>mmdetection</title>
     <url>/2022/05/12/mmdetection/</url>
     <content><![CDATA[<p>总结一些mmdetection 中常用代码及学习技巧</p>
@@ -63,28 +148,6 @@ mmdetection中自带学习率可视化工具，可以根据config文件对学习
       </tags>
   </entry>
   <entry>
-    <title>kaggle top player notes</title>
-    <url>/2022/09/13/kaggle-top-player-notes/</url>
-    <content><![CDATA[<p>记录一些kaggle top player 的笔记 ## <a
-href="https://www.kaggle.com/christofhenkel">Dieter</a>: Deep Learning
-Data Scientist at Nvidia 1. Ensemble, bag of models Dieter
-使用了7个模型，集合albumentations的图像放缩 - 2x seresnext101 -
-SmallMaxSize(512) -&gt; RandomCrop(448,448) - 1x seresnext101 -
-Resize(686,686) -&gt; RandomCrop(568,568) - 1x b3 - LongestMaxSize(512)
--&gt; PadIfNeeded -&gt; RandomCrop(448,448) - 1x b3 -
-LongestMaxSize(664) -&gt; PadIfNeeded -&gt; RandomCrop(600,600) - 1x
-resnet152 - Resize(544,672) -&gt; RandomCrop(512,512) - 1x res2net101 -
-Resize(544,672) -&gt; RandomCrop(512,512) 2. 使用imagenet dataset的 mean
-和 std 正则化输入图像 3. 使用了GeM pooling GeM pooling
-中包含一个网络参数p，随着学习过程使得网络自适应学习选择偏重平均池化或是最大池化，p=1时gem为平均池化,
-<span class="math inline">\(p \rightarrow + \infty\)</span>
-时为最大池化，P越大越关注局部越小越关注全局 -
-最大池化更多的保留的纹理特征，局部特征。 -
-平均池化更多保留的背景信息，全局特征。 4. 学习率： warmup + cosine
-annealing scheduler</p>
-]]></content>
-  </entry>
-  <entry>
     <title>reveal-md</title>
     <url>/2022/05/17/reveal-md/</url>
     <content><![CDATA[<p><em>Reveal-md</em>经常用于组会汇报和一些非正式场景的PPT实现中，生成的PPT或是展示用结果由markdown组成，并且具有默认的布局样式和一些功能丰富的插件，大大简化了生成汇报用PPT的工作量。</p>
@@ -119,69 +182,6 @@ NewRoman</strong></font>,
 ]]></content>
       <tags>
         <tag>ppt</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>linux</title>
-    <url>/2022/05/12/linux/</url>
-    <content><![CDATA[
-]]></content>
-  </entry>
-  <entry>
-    <title>how_to_finetune</title>
-    <url>/2022/09/13/how-to-finetune/</url>
-    <content><![CDATA[<p>总结一些深度模型常用的调试优化技巧。 ## 0x01 探索性数据分析
-EDA(Exploratory Data Analysis)</p>
-<h2 id="x02-正则化exploratory-data-analysis">0x02 正则化(Exploratory
-Data Analysis)</h2>
-<ol type="1">
-<li>常用方法
-<ul>
-<li>Z score Normalization（mean std Standardization） <span
-class="math display">\[
-\frac{x-\overline{x}}{\sigma}
-\]</span></li>
-<li>Min-Max Scaling</li>
-<li>Standard Deviation Method</li>
-<li>Range Method</li>
-</ul></li>
-<li>为什么需要使用正则化方法
-<ul>
-<li>For Cluster
-Analysis：通常情况需要度量不同输入间的距离，未正则化数据可能会存在特殊极值影响度量结果。</li>
-<li>For Principal Component Analysis：PCA gives more weightage to those
-variables that have higher variances than to those variables that have
-very low variances（方差会影响降维结果）</li>
-<li>正则化能改变输入数据的分布，在数据预处理时通常包含两个步骤：Scaling
-&amp; Normalize， Scaling负责将输入数据映射到0-1范围内，Scaling can help
-compare different variables on equal
-footing（在同样的步长上比较两个数据）;
-Normalization本质上是一种激进的策略，The point of normalization is to
-change your observations so that they can be described as a normal
-distribution.Normalization能够改变模型观察数据的角度，使输入数据可以被描述为一个正态分布。</li>
-<li>Scaling(归一化)消除特征间单位和尺度差异的影响，以对每维特征同等看待，需要对特征进行归一化。</li>
-<li>因尺度差异，其损失函数的等高线图可能是椭圆形，梯度方向垂直于等高线,变换后，其损失函数的等高线图更接近圆形，梯度下降的方向震荡更小，收敛更快</li>
-<li>随着训练程度加深，模型复杂度会增加，偏差减少，方差增大，而泛化误差呈现
-U
-型变化，对于一个“好的系统”通常要求误差小，正则化的作用即为适当的控制模型复杂度，从而使得泛化误差曲线取最小值<img
-src="normlize.png"
-alt="如图" />，从贝叶斯角度考虑，正则项等价于引入参数的模型先验概率，可以简单理解为对最大似然估计（MLE）引入先验概率，从而转化为最大后验估计（MAP），其中的先验概率即对于正则项
-## 0x03: 如何选择CNN输入图像的尺寸</li>
-</ul></li>
-</ol>
-<h2 id="xff-references">0xFF: References</h2>
-<p>[1]: <a
-href="https://github.com/vandit15/Class-balanced-loss-pytorch">Class-balanced-loss-pytorch</a>
-[2]: <a
-href="https://www.kaggle.com/discussions/questions-and-answers/59305">When
-and why to standardize or normalize a variable?</a> [3]: <a
-href="https://www.kaggle.com/code/rtatman/data-cleaning-challenge-scale-and-normalize-data/notebook">Data
-Cleaning Challenge: Scale and Normalize Data</a> [4]: <a
-href="https://www.kaggle.com/competitions/siim-isic-melanoma-classification/discussion/160147">CNN
-Input Size Explained</a></p>
-]]></content>
-      <tags>
-        <tag>pytorch</tag>
       </tags>
   </entry>
 </search>
