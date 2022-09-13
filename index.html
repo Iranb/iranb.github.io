@@ -292,7 +292,7 @@ annealing scheduler</p>
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2022-09-13 10:14:20 / Modified: 15:11:06" itemprop="dateCreated datePublished" datetime="2022-09-13T10:14:20+08:00">2022-09-13</time>
+      <time title="Created: 2022-09-13 10:14:20 / Modified: 15:13:37" itemprop="dateCreated datePublished" datetime="2022-09-13T10:14:20+08:00">2022-09-13</time>
     </span>
 
   
@@ -359,7 +359,7 @@ U
 上预训练的backbone模型通常在224x224大小的输入图像上进行预训练，这并不意味着我们需要将输入图像resize到224x224大小</li>
 <li>以224x224大小的输入数据为例，假设输入图像经过网络输出的特征图大小为原始图像的<span class="math inline">\(\frac{1}{32}\)</span>,如果将输入图像尺寸增大到512x512,则对应的输出特征图大小从7x7变为16x16，特征图的输出大小仅与网络本身结构和输入的图像大小有关。</li>
 <li>在模型中，与预训练尺寸有关的是网络从确定大小物体中学习到的固定模式，例如从输入图像中寻找直径为50个像素大小的圆，或是边长为30个像素的三角形。以下三个图为例
-<img src="/2022/09/13/how-to-finetune/Flower.png" alt="Flower"> <img src="/2022/09/13/how-to-finetune/car.png" alt="car">
+<img src="/2022/09/13/how-to-finetune/Flower.png" alt="FLower"> <img src="/2022/09/13/how-to-finetune/car.png" alt="car">
 <img src="/2022/09/13/how-to-finetune/dogs.png" alt="Dogs"></li>
 <li>假设将输入图像大小放大到512x512会发生什么：放缩输入图像的大小等价于放缩图像中的物体，CNN可能找不到直径50的圆和边长30的三角形。
 <img src="/2022/09/13/how-to-finetune/result_512.jpg" alt="result_512">

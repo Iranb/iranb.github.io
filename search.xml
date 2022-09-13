@@ -42,7 +42,7 @@ U
 上预训练的backbone模型通常在224x224大小的输入图像上进行预训练，这并不意味着我们需要将输入图像resize到224x224大小</li>
 <li>以224x224大小的输入数据为例，假设输入图像经过网络输出的特征图大小为原始图像的<span class="math inline">\(\frac{1}{32}\)</span>,如果将输入图像尺寸增大到512x512,则对应的输出特征图大小从7x7变为16x16，特征图的输出大小仅与网络本身结构和输入的图像大小有关。</li>
 <li>在模型中，与预训练尺寸有关的是网络从确定大小物体中学习到的固定模式，例如从输入图像中寻找直径为50个像素大小的圆，或是边长为30个像素的三角形。以下三个图为例
-<img src="/2022/09/13/how-to-finetune/Flower.png" alt="Flower"> <img src="/2022/09/13/how-to-finetune/car.png" alt="car">
+<img src="/2022/09/13/how-to-finetune/Flower.png" alt="FLower"> <img src="/2022/09/13/how-to-finetune/car.png" alt="car">
 <img src="/2022/09/13/how-to-finetune/dogs.png" alt="Dogs"></li>
 <li>假设将输入图像大小放大到512x512会发生什么：放缩输入图像的大小等价于放缩图像中的物体，CNN可能找不到直径50的圆和边长30的三角形。
 <img src="/2022/09/13/how-to-finetune/result_512.jpg" alt="result_512">
@@ -65,6 +65,12 @@ Input Size Explained</a></p>
       </tags>
   </entry>
   <entry>
+    <title>linux</title>
+    <url>/2022/05/12/linux/</url>
+    <content><![CDATA[
+]]></content>
+  </entry>
+  <entry>
     <title>kaggle top player notes</title>
     <url>/2022/09/13/kaggle-top-player-notes/</url>
     <content><![CDATA[<p>记录一些kaggle top player 的笔记 ## <a href="https://www.kaggle.com/christofhenkel">Dieter</a>: Deep Learning
@@ -84,48 +90,6 @@ Resize(544,672) -&gt; RandomCrop(512,512) 2. 使用imagenet dataset的 mean
 平均池化更多保留的背景信息，全局特征。 4. 学习率： warmup + cosine
 annealing scheduler</p>
 ]]></content>
-  </entry>
-  <entry>
-    <title>linux</title>
-    <url>/2022/05/12/linux/</url>
-    <content><![CDATA[
-]]></content>
-  </entry>
-  <entry>
-    <title>reveal-md</title>
-    <url>/2022/05/17/reveal-md/</url>
-    <content><![CDATA[<p><em>Reveal-md</em>经常用于组会汇报和一些非正式场景的PPT实现中，生成的PPT或是展示用结果由markdown组成，并且具有默认的布局样式和一些功能丰富的插件，大大简化了生成汇报用PPT的工作量。</p>
-<p>其主要格式控制由两部分组成，一部分是构成其内容主体的markdown文件，另一部分是控制页面布局的css文件（一般不需要修改）。其渲染引擎使用的是<em>reveal.js</em>，通常情况下不需要对<em>reveal.js</em>进行修改（甚至基本的配置都不需要更改）。创作PPT的过程简化为了专注于内容，构建讲述逻辑，简而言之就是填充需要的内容即可。这里不过多介绍，可<a href="https://github.com/webpro/reveal-md">参考这里</a>了解更多。这篇笔记的主要内容是对一些疑难问题的记录。</p>
-<ol type="1">
-<li>样式控制
-<strong>Reveal-md</strong>中的全局样式需要在命令行中指定样式文件和使用的主题，样式文件需要指定其具体位置，运行时可以使用
-<strong>--css</strong> 和 <strong>--theme</strong>
-指定。<strong>-w</strong> 表示监听文件变化，并随时刷新内容。
-<figure class="highlight bash"><figcaption><span>run_file</span></figcaption><table><tr><td class="code"><pre><span class="line">reveal-md ppt.md -w --theme simple --css styles/base.css</span><br></pre></td></tr></table></figure></li>
-</ol>
-<ul>
-<li>字体控制
-通常情况下，PPT中的中文字体使用<font face="Microsoft Yahei"><strong>微软雅黑</strong></font>，英文字体使用<font face="Times New Roman"><strong>Times
-NewRoman</strong></font>,
-在<strong>Reveal-md</strong>中，字体样式可以由全局的样式文件控制，这里只给出一些基本的样式定义。通过对html中所有元素的字体进行设置，可以得到全局的样式文件，同时，由于添加了
-<strong>!important</strong>，其样式不会被后续的设置覆盖。同样这种方式可以设置PPT中的默认字体大小。<strong>reveal-md</strong>中的默认字体对我来说有点太大了。
-<figure class="highlight css"><figcaption><span>style/style.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">html</span> * &#123;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">&quot;Times New Roman&quot;</span>, Times, <span class="string">&quot;Microsoft Yahei&quot;</span> <span class="meta">!important</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p>reveal 中预定义了几种字体大小，可以根据实际需求进行修改</p>
-<figure class="highlight html"><figcaption><span>ppt.md</span></figcaption><table><tr><td class="code"><pre><span class="line">font-size:medium|xx-small|x-small|small|large|x-large|xx-large|smaller|larger|length|initial|inherit;</span><br></pre></td></tr></table></figure>
-<ol start="2" type="1">
-<li>图像或内容居中设置
-这里有两种方式，一种是全局的图像或者文字进行样式设置进行居中，另一种是创建独立的div块，对块中的内容进行居中，这里使用css优先级可以对其中的元素进行单独更新，首先在全局文件中默认左对齐，之后根据实际需求在markdown文件中再对需要的部分进行修改即可。在<strong>Reveal-md</strong>中，单独的文字或段落会被渲染成
-<p>
-</p>
-标签的形式，因此只需要对其样式进行修改即可。 <figure class="highlight css"><figcaption><span>style/style.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">p</span><span class="selector-class">.left</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: left;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-关于其他元素的居中设置，可以设置一个居中的div块，对块中的内容进行居中即可。实现方式如下：
-<figure class="highlight css"><figcaption><span>style/style.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.center-div</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: center;</span><br><span class="line">    <span class="comment">/*让div内部文字居中*/</span></span><br><span class="line">    <span class="attribute">width</span>: <span class="number">700px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">200px</span>;</span><br><span class="line">    <span class="attribute">margin</span>: auto;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-]]></content>
-      <tags>
-        <tag>ppt</tag>
-      </tags>
   </entry>
   <entry>
     <title>mmdetection</title>
@@ -181,6 +145,42 @@ mmdetection中自带学习率可视化工具，可以根据config文件对学习
 ]]></content>
       <tags>
         <tag>pytorch</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>reveal-md</title>
+    <url>/2022/05/17/reveal-md/</url>
+    <content><![CDATA[<p><em>Reveal-md</em>经常用于组会汇报和一些非正式场景的PPT实现中，生成的PPT或是展示用结果由markdown组成，并且具有默认的布局样式和一些功能丰富的插件，大大简化了生成汇报用PPT的工作量。</p>
+<p>其主要格式控制由两部分组成，一部分是构成其内容主体的markdown文件，另一部分是控制页面布局的css文件（一般不需要修改）。其渲染引擎使用的是<em>reveal.js</em>，通常情况下不需要对<em>reveal.js</em>进行修改（甚至基本的配置都不需要更改）。创作PPT的过程简化为了专注于内容，构建讲述逻辑，简而言之就是填充需要的内容即可。这里不过多介绍，可<a href="https://github.com/webpro/reveal-md">参考这里</a>了解更多。这篇笔记的主要内容是对一些疑难问题的记录。</p>
+<ol type="1">
+<li>样式控制
+<strong>Reveal-md</strong>中的全局样式需要在命令行中指定样式文件和使用的主题，样式文件需要指定其具体位置，运行时可以使用
+<strong>--css</strong> 和 <strong>--theme</strong>
+指定。<strong>-w</strong> 表示监听文件变化，并随时刷新内容。
+<figure class="highlight bash"><figcaption><span>run_file</span></figcaption><table><tr><td class="code"><pre><span class="line">reveal-md ppt.md -w --theme simple --css styles/base.css</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>字体控制
+通常情况下，PPT中的中文字体使用<font face="Microsoft Yahei"><strong>微软雅黑</strong></font>，英文字体使用<font face="Times New Roman"><strong>Times
+NewRoman</strong></font>,
+在<strong>Reveal-md</strong>中，字体样式可以由全局的样式文件控制，这里只给出一些基本的样式定义。通过对html中所有元素的字体进行设置，可以得到全局的样式文件，同时，由于添加了
+<strong>!important</strong>，其样式不会被后续的设置覆盖。同样这种方式可以设置PPT中的默认字体大小。<strong>reveal-md</strong>中的默认字体对我来说有点太大了。
+<figure class="highlight css"><figcaption><span>style/style.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">html</span> * &#123;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">&quot;Times New Roman&quot;</span>, Times, <span class="string">&quot;Microsoft Yahei&quot;</span> <span class="meta">!important</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>reveal 中预定义了几种字体大小，可以根据实际需求进行修改</p>
+<figure class="highlight html"><figcaption><span>ppt.md</span></figcaption><table><tr><td class="code"><pre><span class="line">font-size:medium|xx-small|x-small|small|large|x-large|xx-large|smaller|larger|length|initial|inherit;</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
+<li>图像或内容居中设置
+这里有两种方式，一种是全局的图像或者文字进行样式设置进行居中，另一种是创建独立的div块，对块中的内容进行居中，这里使用css优先级可以对其中的元素进行单独更新，首先在全局文件中默认左对齐，之后根据实际需求在markdown文件中再对需要的部分进行修改即可。在<strong>Reveal-md</strong>中，单独的文字或段落会被渲染成
+<p>
+</p>
+标签的形式，因此只需要对其样式进行修改即可。 <figure class="highlight css"><figcaption><span>style/style.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">p</span><span class="selector-class">.left</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: left;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+关于其他元素的居中设置，可以设置一个居中的div块，对块中的内容进行居中即可。实现方式如下：
+<figure class="highlight css"><figcaption><span>style/style.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.center-div</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: center;</span><br><span class="line">    <span class="comment">/*让div内部文字居中*/</span></span><br><span class="line">    <span class="attribute">width</span>: <span class="number">700px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">200px</span>;</span><br><span class="line">    <span class="attribute">margin</span>: auto;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+]]></content>
+      <tags>
+        <tag>ppt</tag>
       </tags>
   </entry>
 </search>
