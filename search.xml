@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>kaggle top player notes</title>
+    <url>/2022/09/13/kaggle-top-player-notes/</url>
+    <content><![CDATA[<p>记录一些kaggle top player 的笔记 ## <a href="https://www.kaggle.com/christofhenkel">Dieter</a>: Deep Learning
+Data Scientist at Nvidia 1. Ensemble, bag of models Dieter
+使用了7个模型，集合albumentations的图像放缩 - 2x seresnext101 -
+SmallMaxSize(512) -&gt; RandomCrop(448,448) - 1x seresnext101 -
+Resize(686,686) -&gt; RandomCrop(568,568) - 1x b3 - LongestMaxSize(512)
+-&gt; PadIfNeeded -&gt; RandomCrop(448,448) - 1x b3 -
+LongestMaxSize(664) -&gt; PadIfNeeded -&gt; RandomCrop(600,600) - 1x
+resnet152 - Resize(544,672) -&gt; RandomCrop(512,512) - 1x res2net101 -
+Resize(544,672) -&gt; RandomCrop(512,512) 2. 使用imagenet dataset的 mean
+和 std 正则化输入图像 3. 使用了GeM pooling GeM pooling
+中包含一个网络参数p，随着学习过程使得网络自适应学习选择偏重平均池化或是最大池化，p=1时gem为平均池化,
+<span class="math inline">\(p \rightarrow + \infty\)</span>
+时为最大池化，P越大越关注局部越小越关注全局 -
+最大池化更多的保留的纹理特征，局部特征。 -
+平均池化更多保留的背景信息，全局特征。 4. 学习率： warmup + cosine
+annealing scheduler</p>
+]]></content>
+  </entry>
+  <entry>
     <title>how_to_finetune</title>
     <url>/2022/09/13/how-to-finetune/</url>
     <content><![CDATA[<p>总结一些深度模型常用的调试优化技巧。 ## 0x01 探索性数据分析
@@ -35,18 +56,18 @@ distribution.Normalization能够改变模型观察数据的角度，使输入数
 <li>因尺度差异，其损失函数的等高线图可能是椭圆形，梯度方向垂直于等高线,变换后，其损失函数的等高线图更接近圆形，梯度下降的方向震荡更小，收敛更快</li>
 <li>随着训练程度加深，模型复杂度会增加，偏差减少，方差增大，而泛化误差呈现
 U
-型变化，对于一个“好的系统”通常要求误差小，正则化的作用即为适当的控制模型复杂度，从而使得泛化误差曲线取最小值<img src="/.io//normlize.png" alt="如图">，从贝叶斯角度考虑，正则项等价于引入参数的模型先验概率，可以简单理解为对最大似然估计（MLE）引入先验概率，从而转化为最大后验估计（MAP），其中的先验概率即对于正则项
+型变化，对于一个“好的系统”通常要求误差小，正则化的作用即为适当的控制模型复杂度，从而使得泛化误差曲线取最小值<img src="/2022/09/13/how-to-finetune/normlize.png" alt="如图">，从贝叶斯角度考虑，正则项等价于引入参数的模型先验概率，可以简单理解为对最大似然估计（MLE）引入先验概率，从而转化为最大后验估计（MAP），其中的先验概率即对于正则项
 ## 0x03: 如何选择CNN输入图像的尺寸</li>
 </ul></li>
 <li>ImageNet
 上预训练的backbone模型通常在224x224大小的输入图像上进行预训练，这并不意味着我们需要将输入图像resize到224x224大小</li>
 <li>以224x224大小的输入数据为例，假设输入图像经过网络输出的特征图大小为原始图像的<span class="math inline">\(\frac{1}{32}\)</span>,如果将输入图像尺寸增大到512x512,则对应的输出特征图大小从7x7变为16x16，特征图的输出大小仅与网络本身结构和输入的图像大小有关。</li>
 <li>在模型中，与预训练尺寸有关的是网络从确定大小物体中学习到的固定模式，例如从输入图像中寻找直径为50个像素大小的圆，或是边长为30个像素的三角形。以下三个图为例
- <img src="/.io//Flower.png" alt="Flower">
-<img src="/.io//car.png" alt="car"> <img src="/.io//dogs.png" alt="Dogs"></li>
+<img src="/2022/09/13/how-to-finetune/Flower.png" alt="Flower"> <img src="/2022/09/13/how-to-finetune/car.png" alt="car">
+<img src="/2022/09/13/how-to-finetune/dogs.png" alt="Dogs"></li>
 <li>假设将输入图像大小放大到512x512会发生什么：放缩输入图像的大小等价于放缩图像中的物体，CNN可能找不到直径50的圆和边长30的三角形。
-<img src="/.io//result_512.png" alt="result_512">
-如果图像尺寸缩小到128，模型可能找不到其中的圆 <img src="/.io//result_128.png" alt="result_128"></li>
+<img src="/2022/09/13/how-to-finetune/result_512.png" alt="result_512">
+如果图像尺寸缩小到128，模型可能找不到其中的圆 <img src="/2022/09/13/how-to-finetune/result_128.png" alt="result_128"></li>
 <li>结论
 CNN能从图像中搜索固定的模式（patterns），这些固定的模式可能和图像的尺寸相关，因此需要通过实验寻找不同模式对应的inputsize，
 或者融合多尺度特征。</li>
@@ -63,33 +84,6 @@ Input Size Explained</a></p>
       <tags>
         <tag>pytorch</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>kaggle top player notes</title>
-    <url>/2022/09/13/kaggle-top-player-notes/</url>
-    <content><![CDATA[<p>记录一些kaggle top player 的笔记 ## <a href="https://www.kaggle.com/christofhenkel">Dieter</a>: Deep Learning
-Data Scientist at Nvidia 1. Ensemble, bag of models Dieter
-使用了7个模型，集合albumentations的图像放缩 - 2x seresnext101 -
-SmallMaxSize(512) -&gt; RandomCrop(448,448) - 1x seresnext101 -
-Resize(686,686) -&gt; RandomCrop(568,568) - 1x b3 - LongestMaxSize(512)
--&gt; PadIfNeeded -&gt; RandomCrop(448,448) - 1x b3 -
-LongestMaxSize(664) -&gt; PadIfNeeded -&gt; RandomCrop(600,600) - 1x
-resnet152 - Resize(544,672) -&gt; RandomCrop(512,512) - 1x res2net101 -
-Resize(544,672) -&gt; RandomCrop(512,512) 2. 使用imagenet dataset的 mean
-和 std 正则化输入图像 3. 使用了GeM pooling GeM pooling
-中包含一个网络参数p，随着学习过程使得网络自适应学习选择偏重平均池化或是最大池化，p=1时gem为平均池化,
-<span class="math inline">\(p \rightarrow + \infty\)</span>
-时为最大池化，P越大越关注局部越小越关注全局 -
-最大池化更多的保留的纹理特征，局部特征。 -
-平均池化更多保留的背景信息，全局特征。 4. 学习率： warmup + cosine
-annealing scheduler</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>linux</title>
-    <url>/2022/05/12/linux/</url>
-    <content><![CDATA[
-]]></content>
   </entry>
   <entry>
     <title>mmdetection</title>
@@ -182,5 +176,11 @@ NewRoman</strong></font>,
       <tags>
         <tag>ppt</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>linux</title>
+    <url>/2022/05/12/linux/</url>
+    <content><![CDATA[
+]]></content>
   </entry>
 </search>
