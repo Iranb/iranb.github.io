@@ -44,9 +44,12 @@ alt="如图" />，从贝叶斯角度考虑，正则项等价于引入参数的�
 <li>ImageNet
 上预训练的backbone模型通常在224x224大小的输入图像上进行预训练，这并不意味着我们需要将输入图像resize到224x224大小</li>
 <li>以224x224大小的输入数据为例，假设输入图像经过网络输出的特征图大小为原始图像的<span
-class="math inline">\(\frac{1}{32}\)</span></li>
+class="math inline">\(\frac{1}{32}\)</span>,如果将输入图像尺寸增大到512x512,则对应的输出特征图大小从7x7变为16x16，特征图的输出大小仅与网络本身结构和输入的图像大小有关。</li>
+<li>在模型中，与预训练尺寸有关的是网络从确定大小物体中学习到的固定模式，例如从输入图像中寻找直径为50个像素大小的圆，或是边长为30个像素的三角形。以下三个图为例
+<img src="./how-to-finetune/Flower.png" alt="Flower" /> <img
+src="./how-to-finetune/car.png" alt="car" /> <img
+src="./how-to-finetune/dogs.png" alt="Dogs" /> ## 0xFF: References</li>
 </ol>
-<h2 id="xff-references">0xFF: References</h2>
 <p>[1]: <a
 href="https://github.com/vandit15/Class-balanced-loss-pytorch">Class-balanced-loss-pytorch</a><br />
 [2]: <a
@@ -83,12 +86,6 @@ Resize(544,672) -&gt; RandomCrop(512,512) 2. 使用imagenet dataset的 mean
 最大池化更多的保留的纹理特征，局部特征。 -
 平均池化更多保留的背景信息，全局特征。 4. 学习率： warmup + cosine
 annealing scheduler</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>linux</title>
-    <url>/2022/05/12/linux/</url>
-    <content><![CDATA[
 ]]></content>
   </entry>
   <entry>
@@ -189,5 +186,11 @@ NewRoman</strong></font>,
       <tags>
         <tag>ppt</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>linux</title>
+    <url>/2022/05/12/linux/</url>
+    <content><![CDATA[
+]]></content>
   </entry>
 </search>
