@@ -130,7 +130,7 @@ math:
   mathjax:
     enable: true
     # Available values: none | ams | all
-    tags: ams
+    tags: none
 
 markdown:
   plugins:
