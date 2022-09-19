@@ -6,8 +6,10 @@ tags: pytorch
 mathjax: true
 ---
 总结一些深度模型常用的调试优化技巧。
-## 0x01 探索性数据分析 EDA(Exploratory Data Analysis)
 
+## 0x01 探索性数据分析 EDA(Exploratory Data Analysis)
+1. 数据分布分析
+主要判断训练数据中存在的各类数据与其样本占训练数据占比，通常存在两种分布：均匀分布和长尾分布
 ## 0x02 正则化(Exploratory Data Analysis)
 1. 常用方法
     - Z score Normalization（mean std Standardization）
@@ -17,6 +19,27 @@ mathjax: true
     - Min-Max Scaling
     - Standard Deviation Method
     - Range Method
+    - RankGauss(top1-recon)
+    通常RankGauss的效果也会比标准化和归一化好
+{% codeblock mmdetection/rankgauss lang:python line_number:false %}
+from scipy.special import erfinv
+def scale_minmax(x):
+    '''归一化'''
+    return (x - x.min()) / (x.max() - x.min())
+
+def scale_norm(x):
+    '''标准化'''
+    return (x - x.mean()) / x.std()
+
+def scale_rankgauss(x, epsilon=1e-6):
+    '''rankgauss'''
+    x = x.argsort().argsort() # rank
+    x = (x/x.max()-0.5)*2 # scale
+    x = np.clip(x, -1+epsilon, 1-epsilon)
+    x = erfinv(x)
+    return x
+{% endcodeblock %}
+
 2. 为什么需要使用正则化方法
     - For Cluster Analysis：通常情况需要度量不同输入间的距离，未正则化数据可能会存在特殊极值影响度量结果。
     - For Principal Component Analysis：PCA gives more weightage to those variables that have higher variances than to those variables that have very low variances（方差会影响降维结果）
@@ -28,7 +51,7 @@ mathjax: true
 1. ImageNet 上预训练的backbone模型通常在224x224大小的输入图像上进行预训练，这并不意味着我们需要将输入图像resize到224x224大小
 2. 以224x224大小的输入数据为例，假设输入图像经过网络输出的特征图大小为原始图像的$\frac{1}{32}$,如果将输入图像尺寸增大到512x512,则对应的输出特征图大小从7x7变为16x16，特征图的输出大小仅与网络本身结构和输入的图像大小有关。
 3. 在模型中，与预训练尺寸有关的是网络从确定大小物体中学习到的固定模式，例如从输入图像中寻找直径为50个像素大小的圆，或是边长为30个像素的三角形。以下三个图为例
-![FLower](Flower.png)
+![FLower](FLower.png)
 ![car](car.png)
 ![Dogs](dogs.png)
 4. 假设将输入图像大小放大到512x512会发生什么：放缩输入图像的大小等价于放缩图像中的物体，CNN可能找不到直径50的圆和边长30的三角形。
@@ -44,3 +67,4 @@ CNN能从图像中搜索固定的模式（patterns），这些固定的模式可
 [2]: [When and why to standardize or normalize a variable?](https://www.kaggle.com/discussions/questions-and-answers/59305)  
 [3]: [Data Cleaning Challenge: Scale and Normalize Data](https://www.kaggle.com/code/rtatman/data-cleaning-challenge-scale-and-normalize-data/notebook)  
 [4]: [CNN Input Size Explained](https://www.kaggle.com/competitions/siim-isic-melanoma-classification/discussion/160147)  
+\[5]: [RankGauss][https://zhuanlan.zhihu.com/p/330333894]   
