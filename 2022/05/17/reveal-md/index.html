@@ -54,7 +54,121 @@
   </noscript>
 <!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
-<!-- hexo injector head_end end --></head>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
   <div class="headband"></div>
@@ -247,7 +361,7 @@
 NewRoman</strong></font>,
 在<strong>Reveal-md</strong>中，字体样式可以由全局的样式文件控制，这里只给出一些基本的样式定义。通过对html中所有元素的字体进行设置，可以得到全局的样式文件，同时，由于添加了
 <strong>!important</strong>，其样式不会被后续的设置覆盖。同样这种方式可以设置PPT中的默认字体大小。<strong>reveal-md</strong>中的默认字体对我来说有点太大了。
-<figure class="highlight css"><figcaption><span>style/style.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">html</span> * &#123;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">&quot;Times New Roman&quot;</span>, Times, <span class="string">&quot;Microsoft Yahei&quot;</span> <span class="meta">!important</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight css"><figcaption><span>style/style.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">html</span> * {</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">"Times New Roman"</span>, Times, <span class="string">"Microsoft Yahei"</span> <span class="meta">!important</span>;</span><br><span class="line">}</span><br></pre></td></tr></table></figure></li>
 </ul>
 <p>reveal 中预定义了几种字体大小，可以根据实际需求进行修改</p>
 <figure class="highlight html"><figcaption><span>ppt.md</span></figcaption><table><tr><td class="code"><pre><span class="line">font-size:medium|xx-small|x-small|small|large|x-large|xx-large|smaller|larger|length|initial|inherit;</span><br></pre></td></tr></table></figure>
@@ -256,9 +370,9 @@ NewRoman</strong></font>,
 这里有两种方式，一种是全局的图像或者文字进行样式设置进行居中，另一种是创建独立的div块，对块中的内容进行居中，这里使用css优先级可以对其中的元素进行单独更新，首先在全局文件中默认左对齐，之后根据实际需求在markdown文件中再对需要的部分进行修改即可。在<strong>Reveal-md</strong>中，单独的文字或段落会被渲染成
 <p>
 </p>
-标签的形式，因此只需要对其样式进行修改即可。 <figure class="highlight css"><figcaption><span>style/style.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">p</span><span class="selector-class">.left</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: left;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+标签的形式，因此只需要对其样式进行修改即可。 <figure class="highlight css"><figcaption><span>style/style.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">p</span><span class="selector-class">.left</span> {</span><br><span class="line">    <span class="attribute">text-align</span>: left;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 关于其他元素的居中设置，可以设置一个居中的div块，对块中的内容进行居中即可。实现方式如下：
-<figure class="highlight css"><figcaption><span>style/style.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.center-div</span> &#123;</span><br><span class="line">    <span class="attribute">text-align</span>: center;</span><br><span class="line">    <span class="comment">/*让div内部文字居中*/</span></span><br><span class="line">    <span class="attribute">width</span>: <span class="number">700px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">200px</span>;</span><br><span class="line">    <span class="attribute">margin</span>: auto;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight css"><figcaption><span>style/style.css</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.center-div</span> {</span><br><span class="line">    <span class="attribute">text-align</span>: center;</span><br><span class="line">    <span class="comment">/*让div内部文字居中*/</span></span><br><span class="line">    <span class="attribute">width</span>: <span class="number">700px</span>;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">200px</span>;</span><br><span class="line">    <span class="attribute">margin</span>: auto;</span><br><span class="line">}</span><br></pre></td></tr></table></figure></li>
 </ol>
 
     </div>
@@ -315,13 +429,13 @@ NewRoman</strong></font>,
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="Symbols count total">9k</span>
+    <span title="Symbols count total">10k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">8 mins.</span>
+    <span title="Reading time total">9 mins.</span>
   </span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
