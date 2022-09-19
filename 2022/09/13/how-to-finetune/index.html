@@ -34,8 +34,10 @@
 <meta property="og:image" content="https://iranb.github.io/2022/09/13/how-to-finetune/dogs.png">
 <meta property="og:image" content="https://iranb.github.io/2022/09/13/how-to-finetune/result_512.jpg">
 <meta property="og:image" content="https://iranb.github.io/2022/09/13/how-to-finetune/result_128.jpg">
+<meta property="og:image" content="https://iranb.github.io/2022/09/13/how-to-finetune/self_train_1.png">
+<meta property="og:image" content="https://iranb.github.io/2022/09/13/how-to-finetune/self_train_2.png">
 <meta property="article:published_time" content="2022-09-13T02:14:20.000Z">
-<meta property="article:modified_time" content="2022-09-19T12:10:46.407Z">
+<meta property="article:modified_time" content="2022-09-19T12:31:06.095Z">
 <meta property="article:author" content="YiQing Hao">
 <meta property="article:tag" content="pytorch">
 <meta name="twitter:card" content="summary">
@@ -327,7 +329,7 @@ mjx-container[display="true"] + br {
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-09-19 20:10:46" itemprop="dateModified" datetime="2022-09-19T20:10:46+08:00">2022-09-19</time>
+      <time title="Modified: 2022-09-19 20:31:06" itemprop="dateModified" datetime="2022-09-19T20:31:06+08:00">2022-09-19</time>
     </span>
 
   
@@ -337,14 +339,14 @@ mjx-container[display="true"] + br {
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">Symbols count in article: </span>
-      <span>2.3k</span>
+      <span>3.4k</span>
     </span>
     <span class="post-meta-item" title="Reading time">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>2 mins.</span>
+      <span>3 mins.</span>
     </span>
 </div>
 
@@ -407,7 +409,43 @@ U
 如果图像尺寸缩小到128，模型可能找不到其中的圆 <img src="/2022/09/13/how-to-finetune/result_128.jpg" alt="result_128"></li>
 <li>结论
 CNN能从图像中搜索固定的模式（patterns），这些固定的模式可能和图像的尺寸相关，因此需要通过实验寻找不同模式对应的inputsize，
-或者融合多尺度特征。</li>
+或者融合多尺度特征。 ## 0xFe: Psedu label</li>
+<li>Psedu label有效的一些原理上的解释
+<ul>
+<li>根据聚类假设（cluster
+assumption），这些概率较高的点，通常在相同类别的可能性较大，所以其pseudo-label是可信度非常高的。（合理性）</li>
+<li>熵正则化是在最大后验估计框架内从未标记数据中获取信息的一种方法，通过最小化未标记数据的类概率的条件熵，促进了类之间的低密度分离，而无需对密度进行任何建模，通过熵正则化与伪标签具有相同的作用效果，都是希望利用未标签数据的分布的重叠程度的信息。（有效性）</li>
+<li>值得注意的是：当场景不满足 聚类假设
+、熵正则化失效（样本空间覆盖密集）情况下，伪标签技术很有可能失效。</li>
+<li>缺点：容易在有限的测试集上过拟合</li>
+</ul></li>
+<li>Psedu
+label的主要思想来自于Self-Training，其实现思路是找到一种方法用未标记的数据集来扩充已标记的数据集，主要流程如下：
+<ul>
+<li>利用已标记的数据来训练一个好的模型，然后使用这个模型对未标记的数据进行标记</li>
+<li>利用训练好的标签信息在无标签数据上进行推理，使用分数阈值（confidence
+score）或其他方法从无标签数据的推理结果中过滤出可靠的标签，以选择出未标记数据的预测标签的一个子集</li>
+<li>将生成的伪标签与原始的标记数据相结合，并在合并后数据上进行联合训练</li>
+<li>整个过程不断重复，直到无标签数据的置信度不再上升</li>
+</ul></li>
+<li>伪标签往往会向模型的优化数据中混入大量噪声，使模型朝着错误的方向优化，因此需要设计一些策略解决噪声问题：
+<ul>
+<li>添加label smooth
+，使伪标签带来的错误之心度不在sharp，从而减小错误标签导致的噪声问题 <img src="/2022/09/13/how-to-finetune/self_train_1.png" alt="selftrain"></li>
+<li>打标签的过程中添加 label regularization (LR)，增加 pesudo label
+的熵，类似于 label smooth 的作用</li>
+<li>网络重新训练的过程中添加 model regularization
+(MR)，增加网络输出概率的熵</li>
+<li>使用 masked model,在模型中添加dropout，对于选出的每个 unlabeled
+的数据，我们可以将其传入 N次得到不同的 T
+个预测结果，直接将预测结果求平均就得到了预测标签</li>
+<li>先对每个类选择相同数目的样本，防止某些类特别容易造成的样本极度不均衡。然后在每个类中使用
+BALD（Bayesian Active Learning by Disagreement（BALD））
+对样本进行排名并依概率抽取。如果我们想要挖掘简单样本就以 1-BALD
+排名，否则以 BALD 排名，BALD有两种模式，类似数据增强 <img src="/2022/09/13/how-to-finetune/self_train_2.png" alt="self_train_2"></li>
+<li>Confident
+Learning：然后分别计算预测结果的均值和方差，使用模型预测的方差来对损失进行加权，目的是给与方差小的伪标注样本更大的权重</li>
+</ul></li>
 </ol>
 <h2 id="xff-references">0xFF: References</h2>
 <p>[1]: <a target="_blank" rel="noopener" href="https://github.com/vandit15/Class-balanced-loss-pytorch">Class-balanced-loss-pytorch</a><br>
@@ -417,7 +455,11 @@ and why to standardize or normalize a variable?</a><br>
 Cleaning Challenge: Scale and Normalize Data</a><br>
 [4]: <a target="_blank" rel="noopener" href="https://www.kaggle.com/competitions/siim-isic-melanoma-classification/discussion/160147">CNN
 Input Size Explained</a><br>
-[5]: [RankGauss][https://zhuanlan.zhihu.com/p/330333894]</p>
+[5]: <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/330333894">RankGauss</a><br>
+[n-1]: <a target="_blank" rel="noopener" href="https://scholar.google.com/scholar_url?url=https://www.kaggle.com/blobs/download/forum-message-attachment-files/746/pseudo_label_final.pdf&amp;hl=zh-CN&amp;sa=T&amp;oi=gsb-gga&amp;ct=res&amp;cd=0&amp;d=16547318329102522555&amp;ei=8GAoY57_CLaQ6rQP-NO84AU&amp;scisig=AAGBfm00HNXM--PNcdJRi04oq0tThe466g">Pseudo-Label
+: The Simple and Efficient Semi-Supervised Learning Method for Deep
+Neural Networks</a> [n]: <a target="_blank" rel="noopener" href="https://helicqin.github.io/2021/03/18/Self-Training%E7%BB%BC%E8%BF%B0/">Self
+Training</a></p>
 
     </div>
 
@@ -473,13 +515,13 @@ Input Size Explained</a><br>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="Symbols count total">10k</span>
+    <span title="Symbols count total">11k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">9 mins.</span>
+    <span title="Reading time total">10 mins.</span>
   </span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
