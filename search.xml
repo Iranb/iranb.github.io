@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>kaggle top player notes</title>
+    <url>/2022/09/13/kaggle-top-player-notes/</url>
+    <content><![CDATA[<p>记录一些kaggle top player 的笔记 ## <a href="https://www.kaggle.com/christofhenkel">Dieter</a>: Deep Learning
+Data Scientist at Nvidia 1. Ensemble, bag of models Dieter
+使用了7个模型，集合albumentations的图像放缩 - 2x seresnext101 -
+SmallMaxSize(512) -&gt; RandomCrop(448,448) - 1x seresnext101 -
+Resize(686,686) -&gt; RandomCrop(568,568) - 1x b3 - LongestMaxSize(512)
+-&gt; PadIfNeeded -&gt; RandomCrop(448,448) - 1x b3 -
+LongestMaxSize(664) -&gt; PadIfNeeded -&gt; RandomCrop(600,600) - 1x
+resnet152 - Resize(544,672) -&gt; RandomCrop(512,512) - 1x res2net101 -
+Resize(544,672) -&gt; RandomCrop(512,512) 2. 使用imagenet dataset的 mean
+和 std 正则化输入图像 3. 使用了GeM pooling GeM pooling
+中包含一个网络参数p，随着学习过程使得网络自适应学习选择偏重平均池化或是最大池化，p=1时gem为平均池化,
+<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="8.68ex" height="1.758ex" role="img" focusable="false" viewbox="0 -583 3836.6 777"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D45D" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"/></g><g data-mml-node="mo" transform="translate(780.8,0)"><path data-c="2192" d="M56 237T56 250T70 270H835Q719 357 692 493Q692 494 692 496T691 499Q691 511 708 511H711Q720 511 723 510T729 506T732 497T735 481T743 456Q765 389 816 336T935 261Q944 258 944 250Q944 244 939 241T915 231T877 212Q836 186 806 152T761 85T740 35T732 4Q730 -6 727 -8T711 -11Q691 -11 691 0Q691 7 696 25Q728 151 835 230H70Q56 237 56 250Z"/></g><g data-mml-node="mo" transform="translate(2058.6,0)"><path data-c="2B" d="M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z"/></g><g data-mml-node="mi" transform="translate(2836.6,0)"><path data-c="221E" d="M55 217Q55 305 111 373T254 442Q342 442 419 381Q457 350 493 303L507 284L514 294Q618 442 747 442Q833 442 888 374T944 214Q944 128 889 59T743 -11Q657 -11 580 50Q542 81 506 128L492 147L485 137Q381 -11 252 -11Q166 -11 111 57T55 217ZM907 217Q907 285 869 341T761 397Q740 397 720 392T682 378T648 359T619 335T594 310T574 285T559 263T548 246L543 238L574 198Q605 158 622 138T664 94T714 61T765 51Q827 51 867 100T907 217ZM92 214Q92 145 131 89T239 33Q357 33 456 193L425 233Q364 312 334 337Q285 380 233 380Q171 380 132 331T92 214Z"/></g></g></g></svg></mjx-container></span>
+时为最大池化，P越大越关注局部越小越关注全局 -
+最大池化更多的保留的纹理特征，局部特征。 -
+平均池化更多保留的背景信息，全局特征。 4. 学习率： warmup + cosine
+annealing scheduler</p>
+]]></content>
+  </entry>
+  <entry>
     <title>how_to_finetune</title>
     <url>/2022/09/13/how-to-finetune/</url>
     <content><![CDATA[<p>总结一些深度模型常用的调试优化技巧。</p>
@@ -12,13 +33,17 @@
 ## 0x02 正则化(Exploratory Data Analysis)</li>
 <li>常用方法
 <ul>
-<li>Z score Normalization（mean std Standardization） <span class="math display"><mjx-container class="MathJax" jax="SVG" display="true"><svg style="vertical-align: -1.577ex;" xmlns="http://www.w3.org/2000/svg" width="6.349ex" height="4.824ex" role="img" focusable="false" viewbox="0 -1435 2806.4 2132"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mfrac"><g data-mml-node="mrow" transform="translate(220,676)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"/></g><g data-mml-node="mo" transform="translate(794.2,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"/></g><g data-mml-node="mover" transform="translate(1794.4,0)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"/></g><g data-mml-node="mo" transform="translate(0,374)"><svg width="572" height="237" x="0" y="148" viewbox="143 148 572 237"><path data-c="2013" d="M0 248V285H499V248H0Z" transform="scale(1.716,1)"/></svg></g></g></g><g data-mml-node="mi" transform="translate(1117.7,-686)"><path data-c="1D70E" d="M184 -11Q116 -11 74 34T31 147Q31 247 104 333T274 430Q275 431 414 431H552Q553 430 555 429T559 427T562 425T565 422T567 420T569 416T570 412T571 407T572 401Q572 357 507 357Q500 357 490 357T476 358H416L421 348Q439 310 439 263Q439 153 359 71T184 -11ZM361 278Q361 358 276 358Q152 358 115 184Q114 180 114 178Q106 141 106 117Q106 67 131 47T188 26Q242 26 287 73Q316 103 334 153T356 233T361 278Z"/></g><rect width="2566.4" height="60" x="120" y="220"/></g></g></g></svg></mjx-container></span></li>
-<li>Min-Max Scaling</li>
-<li>Standard Deviation Method</li>
-<li>Range Method</li>
-<li>RankGauss(top1-recon) 通常RankGauss的效果也会比标准化和归一化好
-<figure class="highlight python"><figcaption><span>mmdetection/rankgauss</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> scipy.special <span class="keyword">import</span> erfinv</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">scale_minmax</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="string">'''归一化'''</span></span><br><span class="line">    <span class="keyword">return</span> (x - x.<span class="built_in">min</span>()) / (x.<span class="built_in">max</span>() - x.<span class="built_in">min</span>())</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">scale_norm</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="string">'''标准化'''</span></span><br><span class="line">    <span class="keyword">return</span> (x - x.mean()) / x.std()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">scale_rankgauss</span>(<span class="params">x, epsilon=<span class="number">1e-6</span></span>):</span><br><span class="line">    <span class="string">'''rankgauss'''</span></span><br><span class="line">    x = x.argsort().argsort() <span class="comment"># rank</span></span><br><span class="line">    x = (x/x.<span class="built_in">max</span>()-<span class="number">0.5</span>)*<span class="number">2</span> <span class="comment"># scale</span></span><br><span class="line">    x = np.clip(x, -<span class="number">1</span>+epsilon, <span class="number">1</span>-epsilon)</span><br><span class="line">    x = erfinv(x)</span><br><span class="line">    <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure></li>
+<li>Z score Normalization（mean std Standardization）</li>
 </ul></li>
+</ol>
+<p><span class="math display"><mjx-container class="MathJax" jax="SVG" display="true"><svg style="vertical-align: -1.577ex;" xmlns="http://www.w3.org/2000/svg" width="6.349ex" height="4.824ex" role="img" focusable="false" viewbox="0 -1435 2806.4 2132"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mfrac"><g data-mml-node="mrow" transform="translate(220,676)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"/></g><g data-mml-node="mo" transform="translate(794.2,0)"><path data-c="2212" d="M84 237T84 250T98 270H679Q694 262 694 250T679 230H98Q84 237 84 250Z"/></g><g data-mml-node="mover" transform="translate(1794.4,0)"><g data-mml-node="mi"><path data-c="1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"/></g><g data-mml-node="mo" transform="translate(0,374)"><svg width="572" height="237" x="0" y="148" viewbox="143 148 572 237"><path data-c="2013" d="M0 248V285H499V248H0Z" transform="scale(1.716,1)"/></svg></g></g></g><g data-mml-node="mi" transform="translate(1117.7,-686)"><path data-c="1D70E" d="M184 -11Q116 -11 74 34T31 147Q31 247 104 333T274 430Q275 431 414 431H552Q553 430 555 429T559 427T562 425T565 422T567 420T569 416T570 412T571 407T572 401Q572 357 507 357Q500 357 490 357T476 358H416L421 348Q439 310 439 263Q439 153 359 71T184 -11ZM361 278Q361 358 276 358Q152 358 115 184Q114 180 114 178Q106 141 106 117Q106 67 131 47T188 26Q242 26 287 73Q316 103 334 153T356 233T361 278Z"/></g><rect width="2566.4" height="60" x="120" y="220"/></g></g></g></svg></mjx-container></span></p>
+<pre><code>- Min-Max Scaling
+- Standard Deviation Method
+- Range Method
+- RankGauss(top1-recon)
+通常RankGauss的效果也会比标准化和归一化好</code></pre>
+<figure class="highlight python"><figcaption><span>mmdetection/rankgauss</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> scipy.special <span class="keyword">import</span> erfinv</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">scale_minmax</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="string">'''归一化'''</span></span><br><span class="line">    <span class="keyword">return</span> (x - x.<span class="built_in">min</span>()) / (x.<span class="built_in">max</span>() - x.<span class="built_in">min</span>())</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">scale_norm</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="string">'''标准化'''</span></span><br><span class="line">    <span class="keyword">return</span> (x - x.mean()) / x.std()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">scale_rankgauss</span>(<span class="params">x, epsilon=<span class="number">1e-6</span></span>):</span><br><span class="line">    <span class="string">'''rankgauss'''</span></span><br><span class="line">    x = x.argsort().argsort() <span class="comment"># rank</span></span><br><span class="line">    x = (x/x.<span class="built_in">max</span>()-<span class="number">0.5</span>)*<span class="number">2</span> <span class="comment"># scale</span></span><br><span class="line">    x = np.clip(x, -<span class="number">1</span>+epsilon, <span class="number">1</span>-epsilon)</span><br><span class="line">    x = erfinv(x)</span><br><span class="line">    <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
+<ol start="2" type="1">
 <li>为什么需要使用正则化方法
 <ul>
 <li>For Cluster
@@ -68,24 +93,9 @@ Input Size Explained</a><br>
       </tags>
   </entry>
   <entry>
-    <title>kaggle top player notes</title>
-    <url>/2022/09/13/kaggle-top-player-notes/</url>
-    <content><![CDATA[<p>记录一些kaggle top player 的笔记 ## <a href="https://www.kaggle.com/christofhenkel">Dieter</a>: Deep Learning
-Data Scientist at Nvidia 1. Ensemble, bag of models Dieter
-使用了7个模型，集合albumentations的图像放缩 - 2x seresnext101 -
-SmallMaxSize(512) -&gt; RandomCrop(448,448) - 1x seresnext101 -
-Resize(686,686) -&gt; RandomCrop(568,568) - 1x b3 - LongestMaxSize(512)
--&gt; PadIfNeeded -&gt; RandomCrop(448,448) - 1x b3 -
-LongestMaxSize(664) -&gt; PadIfNeeded -&gt; RandomCrop(600,600) - 1x
-resnet152 - Resize(544,672) -&gt; RandomCrop(512,512) - 1x res2net101 -
-Resize(544,672) -&gt; RandomCrop(512,512) 2. 使用imagenet dataset的 mean
-和 std 正则化输入图像 3. 使用了GeM pooling GeM pooling
-中包含一个网络参数p，随着学习过程使得网络自适应学习选择偏重平均池化或是最大池化，p=1时gem为平均池化,
-<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.439ex;" xmlns="http://www.w3.org/2000/svg" width="8.68ex" height="1.758ex" role="img" focusable="false" viewbox="0 -583 3836.6 777"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D45D" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"/></g><g data-mml-node="mo" transform="translate(780.8,0)"><path data-c="2192" d="M56 237T56 250T70 270H835Q719 357 692 493Q692 494 692 496T691 499Q691 511 708 511H711Q720 511 723 510T729 506T732 497T735 481T743 456Q765 389 816 336T935 261Q944 258 944 250Q944 244 939 241T915 231T877 212Q836 186 806 152T761 85T740 35T732 4Q730 -6 727 -8T711 -11Q691 -11 691 0Q691 7 696 25Q728 151 835 230H70Q56 237 56 250Z"/></g><g data-mml-node="mo" transform="translate(2058.6,0)"><path data-c="2B" d="M56 237T56 250T70 270H369V420L370 570Q380 583 389 583Q402 583 409 568V270H707Q722 262 722 250T707 230H409V-68Q401 -82 391 -82H389H387Q375 -82 369 -68V230H70Q56 237 56 250Z"/></g><g data-mml-node="mi" transform="translate(2836.6,0)"><path data-c="221E" d="M55 217Q55 305 111 373T254 442Q342 442 419 381Q457 350 493 303L507 284L514 294Q618 442 747 442Q833 442 888 374T944 214Q944 128 889 59T743 -11Q657 -11 580 50Q542 81 506 128L492 147L485 137Q381 -11 252 -11Q166 -11 111 57T55 217ZM907 217Q907 285 869 341T761 397Q740 397 720 392T682 378T648 359T619 335T594 310T574 285T559 263T548 246L543 238L574 198Q605 158 622 138T664 94T714 61T765 51Q827 51 867 100T907 217ZM92 214Q92 145 131 89T239 33Q357 33 456 193L425 233Q364 312 334 337Q285 380 233 380Q171 380 132 331T92 214Z"/></g></g></g></svg></mjx-container></span>
-时为最大池化，P越大越关注局部越小越关注全局 -
-最大池化更多的保留的纹理特征，局部特征。 -
-平均池化更多保留的背景信息，全局特征。 4. 学习率： warmup + cosine
-annealing scheduler</p>
+    <title>linux</title>
+    <url>/2022/05/12/linux/</url>
+    <content><![CDATA[
 ]]></content>
   </entry>
   <entry>
@@ -143,12 +153,6 @@ mmdetection中自带学习率可视化工具，可以根据config文件对学习
       <tags>
         <tag>pytorch</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>linux</title>
-    <url>/2022/05/12/linux/</url>
-    <content><![CDATA[
-]]></content>
   </entry>
   <entry>
     <title>reveal-md</title>
