@@ -62,6 +62,26 @@ def scale_rankgauss(x, epsilon=1e-6):
 ![result_128](result_128.jpg)
 5. 结论
 CNN能从图像中搜索固定的模式（patterns），这些固定的模式可能和图像的尺寸相关，因此需要通过实验寻找不同模式对应的inputsize， 或者融合多尺度特征。
+## 0xFe: Psedu label
+0. Psedu label有效的一些原理上的解释
+    - 根据聚类假设（cluster assumption），这些概率较高的点，通常在相同类别的可能性较大，所以其pseudo-label是可信度非常高的。（合理性）
+    - 熵正则化是在最大后验估计框架内从未标记数据中获取信息的一种方法，通过最小化未标记数据的类概率的条件熵，促进了类之间的低密度分离，而无需对密度进行任何建模，通过熵正则化与伪标签具有相同的作用效果，都是希望利用未标签数据的分布的重叠程度的信息。（有效性）
+    - 值得注意的是：当场景不满足 聚类假设 、熵正则化失效（样本空间覆盖密集）情况下，伪标签技术很有可能失效。
+    - 缺点：容易在有限的测试集上过拟合
+1. Psedu label的主要思想来自于Self-Training，其实现思路是找到一种方法用未标记的数据集来扩充已标记的数据集，主要流程如下：
+    - 利用已标记的数据来训练一个好的模型，然后使用这个模型对未标记的数据进行标记
+    - 利用训练好的标签信息在无标签数据上进行推理，使用分数阈值（confidence score）或其他方法从无标签数据的推理结果中过滤出可靠的标签，以选择出未标记数据的预测标签的一个子集
+    - 将生成的伪标签与原始的标记数据相结合，并在合并后数据上进行联合训练
+    - 整个过程不断重复，直到无标签数据的置信度不再上升
+2. 伪标签往往会向模型的优化数据中混入大量噪声，使模型朝着错误的方向优化，因此需要设计一些策略解决噪声问题：
+    - 添加label smooth ，使伪标签带来的错误之心度不在sharp，从而减小错误标签导致的噪声问题
+    ![selftrain](self_train_1.png)
+    - 打标签的过程中添加 label regularization (LR)，增加 pesudo label 的熵，类似于 label smooth 的作用
+    - 网络重新训练的过程中添加 model regularization (MR)，增加网络输出概率的熵
+    - 使用 masked model,在模型中添加dropout，对于选出的每个 unlabeled 的数据，我们可以将其传入 N次得到不同的 T 个预测结果，直接将预测结果求平均就得到了预测标签
+    - 先对每个类选择相同数目的样本，防止某些类特别容易造成的样本极度不均衡。然后在每个类中使用 BALD（Bayesian Active Learning by Disagreement（BALD）） 对样本进行排名并依概率抽取。如果我们想要挖掘简单样本就以 1-BALD 排名，否则以 BALD 排名，BALD有两种模式，类似数据增强
+    ![self_train_2](self_train_2.png)
+    - Confident Learning：然后分别计算预测结果的均值和方差，使用模型预测的方差来对损失进行加权，目的是给与方差小的伪标注样本更大的权重
 
 ## 0xFF: References
 
@@ -69,4 +89,6 @@ CNN能从图像中搜索固定的模式（patterns），这些固定的模式可
 [2]: [When and why to standardize or normalize a variable?](https://www.kaggle.com/discussions/questions-and-answers/59305)  
 [3]: [Data Cleaning Challenge: Scale and Normalize Data](https://www.kaggle.com/code/rtatman/data-cleaning-challenge-scale-and-normalize-data/notebook)  
 [4]: [CNN Input Size Explained](https://www.kaggle.com/competitions/siim-isic-melanoma-classification/discussion/160147)  
-\[5]: [RankGauss][https://zhuanlan.zhihu.com/p/330333894]   
+\[5]: [RankGauss](https://zhuanlan.zhihu.com/p/330333894)   
+\[n-1]: [Pseudo-Label : The Simple and Efficient Semi-Supervised Learning Method for Deep Neural Networks](https://scholar.google.com/scholar_url?url=https://www.kaggle.com/blobs/download/forum-message-attachment-files/746/pseudo_label_final.pdf&hl=zh-CN&sa=T&oi=gsb-gga&ct=res&cd=0&d=16547318329102522555&ei=8GAoY57_CLaQ6rQP-NO84AU&scisig=AAGBfm00HNXM--PNcdJRi04oq0tThe466g)
+\[n]: [Self Training](https://helicqin.github.io/2021/03/18/Self-Training%E7%BB%BC%E8%BF%B0/)
