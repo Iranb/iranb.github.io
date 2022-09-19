@@ -13,9 +13,11 @@ mathjax: true
 ## 0x02 正则化(Exploratory Data Analysis)
 1. 常用方法
     - Z score Normalization（mean std Standardization）
+
 $$
     \frac{x-\overline{x}}{\sigma}
 $$
+
     - Min-Max Scaling
     - Standard Deviation Method
     - Range Method
