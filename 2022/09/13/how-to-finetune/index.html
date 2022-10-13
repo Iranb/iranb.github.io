@@ -21,12 +21,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"iranb.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="总结一些深度模型常用的调试优化技巧。 0x01 探索性数据分析 EDA(Exploratory Data Analysis)  数据分布分析 主要判断训练数据中存在的各类数据与其样本占训练数据占比，通常存在两种分布：均匀分布和长尾分布 ## 0x02 正则化(Exploratory Data Analysis) 常用方法  Z score Normalization（mean std Standa">
+    <meta name="description" content="总结一些深度模型常用的调试优化技巧。 0x01 探索性数据分析 EDA(Exploratory Data Analysis)  数据分布分析 主要判断训练数据中存在的各类数据与其样本占训练数据占比，通常存在两种分布：均匀分布和长尾分布 ## 0x02 正则化 常用方法  Z score Normalization（mean std Standardization）    - Min-Max Sca">
 <meta property="og:type" content="article">
 <meta property="og:title" content="how_to_finetune">
 <meta property="og:url" content="https://iranb.github.io/2022/09/13/how-to-finetune/index.html">
 <meta property="og:site_name" content="Road to Stain‘s Gate">
-<meta property="og:description" content="总结一些深度模型常用的调试优化技巧。 0x01 探索性数据分析 EDA(Exploratory Data Analysis)  数据分布分析 主要判断训练数据中存在的各类数据与其样本占训练数据占比，通常存在两种分布：均匀分布和长尾分布 ## 0x02 正则化(Exploratory Data Analysis) 常用方法  Z score Normalization（mean std Standa">
+<meta property="og:description" content="总结一些深度模型常用的调试优化技巧。 0x01 探索性数据分析 EDA(Exploratory Data Analysis)  数据分布分析 主要判断训练数据中存在的各类数据与其样本占训练数据占比，通常存在两种分布：均匀分布和长尾分布 ## 0x02 正则化 常用方法  Z score Normalization（mean std Standardization）    - Min-Max Sca">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://iranb.github.io/2022/09/13/how-to-finetune/normlize.png">
 <meta property="og:image" content="https://iranb.github.io/2022/09/13/how-to-finetune/FLower.png">
@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://iranb.github.io/2022/09/13/how-to-finetune/self_train_1.png">
 <meta property="og:image" content="https://iranb.github.io/2022/09/13/how-to-finetune/self_train_2.png">
 <meta property="article:published_time" content="2022-09-13T02:14:20.000Z">
-<meta property="article:modified_time" content="2022-09-19T12:31:06.095Z">
+<meta property="article:modified_time" content="2022-10-13T06:41:12.945Z">
 <meta property="article:author" content="YiQing Hao">
 <meta property="article:tag" content="pytorch">
 <meta name="twitter:card" content="summary">
@@ -236,7 +236,7 @@ mjx-container[display="true"] + br {
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
             <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#x01-%E6%8E%A2%E7%B4%A2%E6%80%A7%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90-edaexploratory-data-analysis"><span class="nav-number">1.</span> <span class="nav-text">0x01
-探索性数据分析 EDA(Exploratory Data Analysis)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xff-references"><span class="nav-number">2.</span> <span class="nav-text">0xFF: References</span></a></li></ol></div>
+探索性数据分析 EDA(Exploratory Data Analysis)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xfe-psedu-label"><span class="nav-number">2.</span> <span class="nav-text">0xFe: Psedu label</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xff-references"><span class="nav-number">3.</span> <span class="nav-text">0xFF: References</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -249,12 +249,12 @@ mjx-container[display="true"] + br {
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
@@ -329,7 +329,7 @@ mjx-container[display="true"] + br {
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-09-19 20:31:06" itemprop="dateModified" datetime="2022-09-19T20:31:06+08:00">2022-09-19</time>
+      <time title="Modified: 2022-10-13 14:41:12" itemprop="dateModified" datetime="2022-10-13T14:41:12+08:00">2022-10-13</time>
     </span>
 
   
@@ -339,7 +339,7 @@ mjx-container[display="true"] + br {
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">Symbols count in article: </span>
-      <span>3.4k</span>
+      <span>3.7k</span>
     </span>
     <span class="post-meta-item" title="Reading time">
       <span class="post-meta-item-icon">
@@ -363,7 +363,7 @@ mjx-container[display="true"] + br {
 <ol type="1">
 <li>数据分布分析
 主要判断训练数据中存在的各类数据与其样本占训练数据占比，通常存在两种分布：均匀分布和长尾分布
-## 0x02 正则化(Exploratory Data Analysis)</li>
+## 0x02 正则化</li>
 <li>常用方法
 <ul>
 <li>Z score Normalization（mean std Standardization）</li>
@@ -409,7 +409,12 @@ U
 如果图像尺寸缩小到128，模型可能找不到其中的圆 <img src="/2022/09/13/how-to-finetune/result_128.jpg" alt="result_128"></li>
 <li>结论
 CNN能从图像中搜索固定的模式（patterns），这些固定的模式可能和图像的尺寸相关，因此需要通过实验寻找不同模式对应的inputsize，
-或者融合多尺度特征。 ## 0xFe: Psedu label</li>
+或者融合多尺度特征。 ## 0x04 DataAugmentation</li>
+<li>CutMix 公式如下: <span class="math display"><mjx-container class="MathJax" jax="SVG" display="true"><svg style="vertical-align: -0.452ex;" xmlns="http://www.w3.org/2000/svg" width="75.566ex" height="2.149ex" role="img" focusable="false" viewbox="0 -750 33400 950"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="merror" data-mjx-error="Unknown environment 'itemize'" title="Unknown environment 'itemize'"><rect data-background="true" width="33400" height="950" y="-200"/><title>Unknown environment 'itemize'</title><g data-mml-node="mtext" style="font-family: serif;"><text data-variant="-explicitFont" transform="scale(1,-1)" font-size="884px"> \begin{itemize} \item[$\bullet$] 文字内容 \end{itemize} </text></g></g></g></g></svg></mjx-container></span></li>
+</ol>
+<figure class="highlight python"><figcaption><span>feature_cutmix.py</span></figcaption><table><tr><td class="code"><pre><span class="line">x = self.layer1(x)</span><br><span class="line">bbx1, bby1, bbx2, bby2 = rand_bbox(x.size(), lam)</span><br><span class="line">x[:,:,bbx1:bbx2,bby1:bby2] = x[rand_index,:,bbx1:bbx2,bby1:bby2]</span><br><span class="line">x = self.layer2(x)</span><br><span class="line"><span class="comment"># if you use activate fun like ReLU, change inplace=True to inplace=False</span></span><br><span class="line"><span class="number">2.</span> Mixup</span><br></pre></td></tr></table></figure>
+<h2 id="xfe-psedu-label">0xFe: Psedu label</h2>
+<ol start="0" type="1">
 <li>Psedu label有效的一些原理上的解释
 <ul>
 <li>根据聚类假设（cluster
@@ -515,13 +520,13 @@ Training</a></p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-line"></i>
     </span>
-    <span title="Symbols count total">11k</span>
+    <span title="Symbols count total">12k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">10 mins.</span>
+    <span title="Reading time total">11 mins.</span>
   </span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
