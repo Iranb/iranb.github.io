@@ -10,7 +10,7 @@ mathjax: true
 ## 0x01 探索性数据分析 EDA(Exploratory Data Analysis)
 1. 数据分布分析
 主要判断训练数据中存在的各类数据与其样本占训练数据占比，通常存在两种分布：均匀分布和长尾分布
-## 0x02 正则化(Exploratory Data Analysis)
+## 0x02 正则化
 1. 常用方法
     - Z score Normalization（mean std Standardization）
 
@@ -62,6 +62,24 @@ def scale_rankgauss(x, epsilon=1e-6):
 ![result_128](result_128.jpg)
 5. 结论
 CNN能从图像中搜索固定的模式（patterns），这些固定的模式可能和图像的尺寸相关，因此需要通过实验寻找不同模式对应的inputsize， 或者融合多尺度特征。
+## 0x04 DataAugmentation
+1. CutMix
+公式如下:
+$$
+    \begin{itemize}
+    \item[$\bullet$] 文字内容
+    \end{itemize}
+$$
+
+{% codeblock feature_cutmix.py lang:python line_number:false %}
+x = self.layer1(x)
+bbx1, bby1, bbx2, bby2 = rand_bbox(x.size(), lam)
+x[:,:,bbx1:bbx2,bby1:bby2] = x[rand_index,:,bbx1:bbx2,bby1:bby2]
+x = self.layer2(x)
+# if you use activate fun like ReLU, change inplace=True to inplace=False
+2. Mixup
+{% endcodeblock %}
+
 ## 0xFe: Psedu label
 0. Psedu label有效的一些原理上的解释
     - 根据聚类假设（cluster assumption），这些概率较高的点，通常在相同类别的可能性较大，所以其pseudo-label是可信度非常高的。（合理性）
