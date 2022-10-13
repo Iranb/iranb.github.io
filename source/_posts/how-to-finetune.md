@@ -66,9 +66,10 @@ CNN能从图像中搜索固定的模式（patterns），这些固定的模式可
 1. CutMix
 公式如下:
 $$
-    \begin{itemize}
-    \item[$\bullet$] 文字内容
-    \end{itemize}
+    \begin{aligned}
+    &\tilde{x}=\mathbf{M} \odot x_A+(\mathbf{1}-\mathbf{M}) \odot x_B \\
+    &\tilde{y}=\lambda y_A+(1-\lambda) y_B
+    \end{aligned}
 $$
 
 {% codeblock feature_cutmix.py lang:python line_number:false %}
