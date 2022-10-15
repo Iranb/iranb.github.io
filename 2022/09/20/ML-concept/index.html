@@ -21,15 +21,13 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"iranb.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="0x01归纳偏置（inductive bias）  定义   指的是学习算法中，当学习器去预测其未遇到过的输入结果时，所做的一些假设的集合 模型在预测训练中未出现的样本时，若无任何约束未知样本可以是对应任意的结果，若没有其它额外的假设，问题就无法解决。 关于目标函数的必要假设就称为归纳偏置   归纳偏置种类  最大条件独立性 最小交叉验证误差 最大边界 最小描述长度 最少特征数 最近邻居  虽然大">
-<meta property="og:type" content="article">
+    <meta property="og:type" content="article">
 <meta property="og:title" content="ML concept">
 <meta property="og:url" content="https://iranb.github.io/2022/09/20/ML-concept/index.html">
 <meta property="og:site_name" content="Road to Stain‘s Gate">
-<meta property="og:description" content="0x01归纳偏置（inductive bias）  定义   指的是学习算法中，当学习器去预测其未遇到过的输入结果时，所做的一些假设的集合 模型在预测训练中未出现的样本时，若无任何约束未知样本可以是对应任意的结果，若没有其它额外的假设，问题就无法解决。 关于目标函数的必要假设就称为归纳偏置   归纳偏置种类  最大条件独立性 最小交叉验证误差 最大边界 最小描述长度 最少特征数 最近邻居  虽然大">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-09-20T02:10:31.000Z">
-<meta property="article:modified_time" content="2022-09-20T02:15:47.762Z">
+<meta property="article:modified_time" content="2022-10-13T12:58:29.955Z">
 <meta property="article:author" content="YiQing Hao">
 <meta property="article:tag" content="machine learning">
 <meta name="twitter:card" content="summary">
@@ -213,7 +211,7 @@ mjx-container[display="true"] + br {
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+    <div class="sidebar-inner sidebar-overview-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           Table of Contents
@@ -226,7 +224,6 @@ mjx-container[display="true"] + br {
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#x01%E5%BD%92%E7%BA%B3%E5%81%8F%E7%BD%AEinductive-bias"><span class="nav-number">1.</span> <span class="nav-text">0x01归纳偏置（inductive bias）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xff-reference"><span class="nav-number">2.</span> <span class="nav-text">0xFF Reference</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -311,9 +308,15 @@ mjx-container[display="true"] + br {
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">Posted on</span>
-      
 
-      <time title="Created: 2022-09-20 10:10:31 / Modified: 10:15:47" itemprop="dateCreated datePublished" datetime="2022-09-20T10:10:31+08:00">2022-09-20</time>
+      <time title="Created: 2022-09-20 10:10:31" itemprop="dateCreated datePublished" datetime="2022-09-20T10:10:31+08:00">2022-09-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2022-10-13 20:58:29" itemprop="dateModified" datetime="2022-10-13T20:58:29+08:00">2022-10-13</time>
     </span>
 
   
@@ -323,7 +326,7 @@ mjx-container[display="true"] + br {
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">Symbols count in article: </span>
-      <span>269</span>
+      <span>0</span>
     </span>
     <span class="post-meta-item" title="Reading time">
       <span class="post-meta-item-icon">
@@ -341,30 +344,7 @@ mjx-container[display="true"] + br {
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="x01归纳偏置inductive-bias">0x01归纳偏置（inductive bias）</h2>
-<ol type="1">
-<li>定义</li>
-</ol>
-<ul>
-<li>指的是学习算法中，当学习器去预测其未遇到过的输入结果时，所做的一些假设的集合</li>
-<li>模型在预测训练中未出现的样本时，若无任何约束未知样本可以是对应任意的结果，若没有其它额外的假设，问题就无法解决。</li>
-<li>关于目标函数的必要假设就称为归纳偏置</li>
-</ul>
-<ol start="2" type="1">
-<li>归纳偏置种类
-<ul>
-<li>最大条件独立性</li>
-<li>最小交叉验证误差</li>
-<li>最大边界</li>
-<li>最小描述长度</li>
-<li>最少特征数</li>
-<li>最近邻居</li>
-</ul></li>
-<li>虽然大部分的学习算法使用固定的偏置，但有些算法在获得更多数据时可以变换它们的偏置。这不会取消偏置，因为偏置变换的过程本身就是一种偏置。</li>
-</ol>
-<h2 id="xff-reference">0xFF Reference</h2>
-<p>[1]: <a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%BD%92%E7%BA%B3%E5%81%8F%E7%BD%AE">归纳偏置
-wiki</a></p>
+        
 
     </div>
 
