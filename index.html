@@ -621,7 +621,7 @@ annealing scheduler</p>
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-10-15 10:17:49" itemprop="dateModified" datetime="2022-10-15T10:17:49+08:00">2022-10-15</time>
+      <time title="Modified: 2022-10-15 10:52:18" itemprop="dateModified" datetime="2022-10-15T10:52:18+08:00">2022-10-15</time>
     </span>
 
   
@@ -631,14 +631,14 @@ annealing scheduler</p>
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">Symbols count in article: </span>
-      <span>4.7k</span>
+      <span>5.1k</span>
     </span>
     <span class="post-meta-item" title="Reading time">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">Reading time &asymp;</span>
-      <span>4 mins.</span>
+      <span>5 mins.</span>
     </span>
 </div>
 
@@ -652,10 +652,16 @@ annealing scheduler</p>
           <p>总结一些深度模型常用的调试优化技巧。</p>
 <h2 id="x01-探索性数据分析-edaexploratory-data-analysis">0x01
 探索性数据分析 EDA(Exploratory Data Analysis)</h2>
-<ol type="1">
-<li>数据分布分析
+<p>探索性数据分析(EDA)是通过总结数据集的主要特征来理解数据集，进行数据清洗、为后期的参数设置提供依据。不同任务的EDA流程不同。
+1. 数据分布分析
 主要判断训练数据中存在的各类数据与其样本占训练数据占比，通常存在两种分布：均匀分布和长尾分布
-## 0x02 正则化</li>
+<img src="/2022/09/13/how-to-finetune/data_dis.png">
+类别分布不均衡的数据集（不一定呈现长尾分布）需要设置策略如Inbalcance
+loss 、 Data expansion减少对结果的影响。 2. 超参数设置分析
+在检测模型中，通常会用到预先设计的anchor，anchor的设计尺寸与目标在图像中的位置、大小以及深度网络的不同层尺寸、深度有关。
+<img src="/2022/09/13/how-to-finetune/anchor.png"></p>
+<h2 id="x02-正则化">0x02 正则化</h2>
+<ol type="1">
 <li>常用方法
 <ul>
 <li>Z score Normalization（mean std Standardization）</li>
@@ -669,7 +675,7 @@ annealing scheduler</p>
 通常RankGauss的效果也会比标准化和归一化好</code></pre>
 <figure class="highlight python"><figcaption><span>mmdetection/rankgauss</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> scipy.special <span class="keyword">import</span> erfinv</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">scale_minmax</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="string">'''归一化'''</span></span><br><span class="line">    <span class="keyword">return</span> (x - x.<span class="built_in">min</span>()) / (x.<span class="built_in">max</span>() - x.<span class="built_in">min</span>())</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">scale_norm</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="string">'''标准化'''</span></span><br><span class="line">    <span class="keyword">return</span> (x - x.mean()) / x.std()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">scale_rankgauss</span>(<span class="params">x, epsilon=<span class="number">1e-6</span></span>):</span><br><span class="line">    <span class="string">'''rankgauss'''</span></span><br><span class="line">    x = x.argsort().argsort() <span class="comment"># rank</span></span><br><span class="line">    x = (x/x.<span class="built_in">max</span>()-<span class="number">0.5</span>)*<span class="number">2</span> <span class="comment"># scale</span></span><br><span class="line">    x = np.clip(x, -<span class="number">1</span>+epsilon, <span class="number">1</span>-epsilon)</span><br><span class="line">    x = erfinv(x)</span><br><span class="line">    <span class="keyword">return</span> x</span><br></pre></td></tr></table></figure>
 <ol start="2" type="1">
-<li><p>为什么需要使用正则化方法</p>
+<li>为什么需要使用正则化方法
 <ul>
 <li>For Cluster
 Analysis：通常情况需要度量不同输入间的距离，未正则化数据可能会存在特殊极值影响度量结果。</li>
@@ -687,23 +693,29 @@ distribution.Normalization能够改变模型观察数据的角度，使输入数
 <li>因尺度差异，其损失函数的等高线图可能是椭圆形，梯度方向垂直于等高线,变换后，其损失函数的等高线图更接近圆形，梯度下降的方向震荡更小，收敛更快</li>
 <li>随着训练程度加深，模型复杂度会增加，偏差减少，方差增大，而泛化误差呈现
 U
-型变化，对于一个“好的系统”通常要求误差小，正则化的作用即为适当的控制模型复杂度，从而使得泛化误差曲线取最小值<img src="/2022/09/13/how-to-finetune/normlize.png" alt="如图">，从贝叶斯角度考虑，正则项等价于引入参数的模型先验概率，可以简单理解为对最大似然估计（MLE）引入先验概率，从而转化为最大后验估计（MAP），其中的先验概率即对于正则项
-## 0x03: 如何选择CNN输入图像的尺寸</li>
+型变化，对于一个“好的系统”通常要求误差小，正则化的作用即为适当的控制模型复杂度，从而使得泛化误差曲线取最小值<img src="/2022/09/13/how-to-finetune/normlize.png" alt="如图">，从贝叶斯角度考虑，正则项等价于引入参数的模型先验概率，可以简单理解为对最大似然估计（MLE）引入先验概率，从而转化为最大后验估计（MAP），其中的先验概率即对于正则项</li>
 </ul></li>
-<li><p>ImageNet
-上预训练的backbone模型通常在224x224大小的输入图像上进行预训练，这并不意味着我们需要将输入图像resize到224x224大小</p></li>
-<li><p>以224x224大小的输入数据为例，假设输入图像经过网络输出的特征图大小为原始图像的<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.816ex;" xmlns="http://www.w3.org/2000/svg" width="2.595ex" height="2.773ex" role="img" focusable="false" viewbox="0 -864.9 1147.1 1225.5"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mfrac"><g data-mml-node="mn" transform="translate(396.8,394) scale(0.707)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"/></g><g data-mml-node="mn" transform="translate(220,-345) scale(0.707)"><path data-c="33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"/><path data-c="32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z" transform="translate(500,0)"/></g><rect width="907.1" height="60" x="120" y="220"/></g></g></g></svg></mjx-container></span>,如果将输入图像尺寸增大到512x512,则对应的输出特征图大小从7x7变为16x16，特征图的输出大小仅与网络本身结构和输入的图像大小有关。</p></li>
-<li><p>在模型中，与预训练尺寸有关的是网络从确定大小物体中学习到的固定模式，例如从输入图像中寻找直径为50个像素大小的圆，或是边长为30个像素的三角形。以下三个图为例
+</ol>
+<h2 id="x03-输入图像的尺寸对网络的影响">0x03:
+输入图像的尺寸对网络的影响</h2>
+<ol type="1">
+<li>ImageNet
+上预训练的backbone模型通常在224x224大小的输入图像上进行预训练，这并不意味着我们需要将输入图像resize到224x224大小</li>
+<li>以224x224大小的输入数据为例，假设输入图像经过网络输出的特征图大小为原始图像的<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.816ex;" xmlns="http://www.w3.org/2000/svg" width="2.595ex" height="2.773ex" role="img" focusable="false" viewbox="0 -864.9 1147.1 1225.5"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mfrac"><g data-mml-node="mn" transform="translate(396.8,394) scale(0.707)"><path data-c="31" d="M213 578L200 573Q186 568 160 563T102 556H83V602H102Q149 604 189 617T245 641T273 663Q275 666 285 666Q294 666 302 660V361L303 61Q310 54 315 52T339 48T401 46H427V0H416Q395 3 257 3Q121 3 100 0H88V46H114Q136 46 152 46T177 47T193 50T201 52T207 57T213 61V578Z"/></g><g data-mml-node="mn" transform="translate(220,-345) scale(0.707)"><path data-c="33" d="M127 463Q100 463 85 480T69 524Q69 579 117 622T233 665Q268 665 277 664Q351 652 390 611T430 522Q430 470 396 421T302 350L299 348Q299 347 308 345T337 336T375 315Q457 262 457 175Q457 96 395 37T238 -22Q158 -22 100 21T42 130Q42 158 60 175T105 193Q133 193 151 175T169 130Q169 119 166 110T159 94T148 82T136 74T126 70T118 67L114 66Q165 21 238 21Q293 21 321 74Q338 107 338 175V195Q338 290 274 322Q259 328 213 329L171 330L168 332Q166 335 166 348Q166 366 174 366Q202 366 232 371Q266 376 294 413T322 525V533Q322 590 287 612Q265 626 240 626Q208 626 181 615T143 592T132 580H135Q138 579 143 578T153 573T165 566T175 555T183 540T186 520Q186 498 172 481T127 463Z"/><path data-c="32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z" transform="translate(500,0)"/></g><rect width="907.1" height="60" x="120" y="220"/></g></g></g></svg></mjx-container></span>,如果将输入图像尺寸增大到512x512,则对应的输出特征图大小从7x7变为16x16，特征图的输出大小仅与网络本身结构和输入的图像大小有关。</li>
+<li>在模型中，与预训练尺寸有关的是网络从确定大小物体中学习到的固定模式，例如从输入图像中寻找直径为50个像素大小的圆，或是边长为30个像素的三角形。以下三个图为例
 <img src="/2022/09/13/how-to-finetune/FLower.png" alt="FLower"> <img src="/2022/09/13/how-to-finetune/car.png" alt="car">
-<img src="/2022/09/13/how-to-finetune/dogs.png" alt="Dogs"></p></li>
-<li><p>假设将输入图像大小放大到512x512会发生什么：放缩输入图像的大小等价于放缩图像中的物体，CNN可能找不到直径50的圆和边长30的三角形。
+<img src="/2022/09/13/how-to-finetune/dogs.png" alt="Dogs"></li>
+<li>假设将输入图像大小放大到512x512会发生什么：放缩输入图像的大小等价于放缩图像中的物体，CNN可能找不到直径50的圆和边长30的三角形。
 <img src="/2022/09/13/how-to-finetune/result_512.jpg" alt="result_512">
-如果图像尺寸缩小到128，模型可能找不到其中的圆 <img src="/2022/09/13/how-to-finetune/result_128.jpg" alt="result_128"></p></li>
-<li><p>结论
+如果图像尺寸缩小到128，模型可能找不到其中的圆 <img src="/2022/09/13/how-to-finetune/result_128.jpg" alt="result_128"></li>
+<li>结论
 CNN能从图像中搜索固定的模式（patterns），这些固定的模式可能和图像的尺寸相关，因此需要通过实验寻找不同模式对应的inputsize，
-或者融合多尺度特征。 ## 0x04 DataAugmentation</p></li>
-<li><p>Mosaic 数据增强方法 这里主要介绍
-基于Mosaic的数据增强方法，最早在YOLOV4的论文中提及，主要思想是将多张图片进行随机裁剪，再拼接到一张图上作为训练数据。这样做的好处是丰富了图片的背景，变相增大了batch
+或者融合多尺度特征。</li>
+</ol>
+<h2 id="x04-dataaugmentation">0x04 DataAugmentation</h2>
+<ol start="0" type="1">
+<li><p>Mosaic 数据增强方法
+数据增强的目的是在有限的训练数据基础上构建更多的可训练样本，同时缩小训练集和测试集的数据gap；这里主要介绍基于Mosaic的数据增强方法，最早在YOLOV4的论文中提及，主要思想是将多张图片进行随机裁剪，再拼接到一张图上作为训练数据。这样做的好处是丰富了图片的背景，变相增大了batch
 size 而且不增加额外的计算量。 <img src="/2022/09/13/how-to-finetune/mosaic.png" alt="mosaic"></p></li>
 <li><p>Mixup ICLR 2018
 基本思想是按照一定的全局比例叠加图像，能更好的将两个易混淆的类别区分，增大类间距。对应的公式如下所示：
@@ -719,7 +731,9 @@ mixup适用于有监督的任务中，通常用于区分易混淆类，也有增
 基于ResNet-50的无监督和有监督分类结果 | 测试性能 top-1| Cutout | Mixup |
 CutMix | | ---- | ---- | ---- | ---- | | 有监督 ACC | 77.07 | 77.42 |
 77.6 | | 无监督 ACC | 46.69 | 45.84 | 47.25 | 相比于CutMix，
-Mixup实现简单且更常用，CutMix在检测任务和其他下游任务上需要针对目标所在区域进行裁剪，因此难用一些，目前kaggle上常用Mixup区分易混淆类别。</p>
+Mixup实现简单且更常用，CutMix在检测任务和其他下游任务上需要针对目标所在区域进行裁剪，因此难用一些，目前kaggle上常用Mixup区分易混淆类别。
+<del>5. 补充 ROI-crop</del>
+<del>ROI-crop是一种难以实现但效果非常好的增强方式，其思路是从图像中去除大部分背景信息，使模型更加关注目标所在区域，一般需要使用预训练的ROI网络对图像进行处理</del></p>
 <h2 id="xfe-psedu-label">0xFe: Psedu label</h2>
 <ol start="0" type="1">
 <li>Psedu label有效的一些原理上的解释
@@ -727,8 +741,8 @@ Mixup实现简单且更常用，CutMix在检测任务和其他下游任务上需
 <li>根据聚类假设（cluster
 assumption），这些概率较高的点，通常在相同类别的可能性较大，所以其pseudo-label是可信度非常高的。（合理性）</li>
 <li>熵正则化是在最大后验估计框架内从未标记数据中获取信息的一种方法，通过最小化未标记数据的类概率的条件熵，促进了类之间的低密度分离，而无需对密度进行任何建模，通过熵正则化与伪标签具有相同的作用效果，都是希望利用未标签数据的分布的重叠程度的信息。（有效性）</li>
-<li>值得注意的是：当场景不满足 聚类假设
-、熵正则化失效（样本空间覆盖密集）情况下，伪标签技术很有可能失效。</li>
+<li>值得注意的是：当场景<strong>不满足聚类假设</strong>
+、<strong>熵正则化失效（样本空间覆盖密集）</strong>情况下，伪标签技术很有可能失效。</li>
 <li>缺点：容易在有限的测试集上过拟合</li>
 </ul></li>
 <li>Psedu
